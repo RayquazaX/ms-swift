@@ -527,6 +527,40 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
                         with self._template_context(self.template):
                             encoded_inputs['_opsd_teacher_inputs'] = self._prepare_batch_inputs(
                                 teacher_data, encode_prompt_only=False)
+
+                    # --- OPSD I/O Logging (first item per batch only) ---
+                    if self.log_opsd_io and self.accelerator.is_main_process \
+                            and teacher_data is not None and len(generated_inputs) > 0:
+                        gen_data = generated_inputs[0]
+                        t_data = teacher_data[0]
+                        student_msgs = inputs[0].get('messages', [])
+
+                        def _to_text(x):
+                            if isinstance(x, str):
+                                return x
+                            if isinstance(x, list) and x and isinstance(x[0], int):
+                                return self.processing_class.decode(x, skip_special_tokens=True)
+                            if isinstance(x, list):
+                                return ' '.join(str(item.get('text', item)) if isinstance(item, dict) else str(item)
+                                               for item in x)
+                            return '' if x is None else str(x)
+
+                        student_response_text = _to_text(gen_data['messages'][-1].get('content'))
+                        record = {
+                            'step': self.state.global_step,
+                            '=== STUDENT INPUT ===': '',
+                            'student_system': _to_text(next(
+                                (m.get('content') for m in student_msgs if m.get('role') == 'system'), '')),
+                            'student_query': _to_text(next(
+                                (m.get('content') for m in student_msgs if m.get('role') == 'user'), '')),
+                            '=== STUDENT OUTPUT ===': '',
+                            'student_response': student_response_text[:2000],
+                            'student_response_chars': len(student_response_text),
+                            '=== TEACHER INPUT ===': '',
+                            'teacher_query': _to_text(next(
+                                (m.get('content') for m in t_data['messages'] if m.get('role') == 'user'), '')),
+                        }
+                        self.opsd_io_writer.append(record)
                 else:
                     # Need prompt-only encoding for on-policy generation
                     encoded_inputs = self._prepare_batch_inputs(inputs, encode_prompt_only=True)
@@ -814,6 +848,11 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
         self.log_completions = args.log_completions
         self.wandb_log_unique_prompts = getattr(args, 'wandb_log_unique_prompts', False)
         self.jsonl_writer = JsonlWriter(os.path.join(self.args.output_dir, 'completions.jsonl'))
+
+        # OPSD I/O logging (structured student/teacher I/O per step)
+        self.log_opsd_io = getattr(args, 'log_opsd_io', False)
+        if self.log_opsd_io:
+            self.opsd_io_writer = JsonlWriter(os.path.join(self.args.output_dir, 'opsd_io_log.jsonl'))
 
         # Initialize logs deque for storing rollout data (aligned with GRPO)
         self._logs = {

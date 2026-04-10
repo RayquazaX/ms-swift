@@ -260,6 +260,7 @@ class RLHFArguments(TeacherModelArguments, GRPOArguments, PPOArguments, RewardMo
     seq_kd: bool = False
     gkd_logits_topk: Optional[int] = None
     offload_teacher_model: bool = False
+    log_opsd_io: bool = False  # Log structured student/teacher I/O per step to opsd_io_log.jsonl
     # compat
     max_new_tokens: Optional[int] = None  # use max_completion_length instead
 
