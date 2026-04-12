@@ -166,3 +166,16 @@ GitHub Actions workflows in `.github/workflows/`:
 - `citest_npu.yaml` — NPU tests
 - `lint.yaml` — Linting
 - `publish.yaml` — PyPI publish
+
+## Experiment Management Rules
+
+All experiments (training + evaluation) must follow strict isolation:
+
+1. **独立脚本**: 每个实验组合（模型 × 超参数变体）必须有独立的 train/eval 脚本，命名格式 `{action}_{model}_{variant}.sh`，例如 `train_qwen3_1.7b_beta0.sh`、`eval_qwen3_1.7b_beta0_step100.sh`
+2. **独立路径**: 每个实验的 `--output_dir` 必须唯一，例如 `training_output/qwen3-1.7b-beta0/`，不同实验绝不共享输出目录
+3. **独立日志**: 每个实验的 stdout 日志独立保存，例如 `logs/train_1.7b_beta0.log`
+4. **独立 wandb**: 每个实验设置独立的 `WANDB_RUN_NAME`，例如 `qwen3-1.7b-beta0-fwd-kl`
+5. **独立 tmux**: 每个实验运行在独立的 tmux session 中
+6. **独立 GPU**: 单卡实验使用不同 `CUDA_VISIBLE_DEVICES`
+7. **独立端口**: 并行 eval 使用不同 `--port`（8001, 8002, ...）避免冲突
+8. **禁止复用**: 永远不要编辑已有脚本来跑新实验，必须创建新脚本

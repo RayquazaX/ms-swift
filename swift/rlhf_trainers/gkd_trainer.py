@@ -411,6 +411,20 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
             teacher_out = TeacherOutput(full_logits=outputs_teacher.logits, opsd_teacher_labels=opsd_labels)
             loss = self._compute_jsd_loss(outputs_student.logits, teacher_out, inputs['labels'])
 
+            # --- OPSD Teacher Output Logging ---
+            if self.log_opsd_io and self.accelerator.is_main_process:
+                with torch.no_grad():
+                    t_logits = outputs_teacher.logits[0]
+                    t_labels = opsd_labels[0] if opsd_labels is not None else inputs['labels'][0]
+                    t_resp_mask = t_labels != -100
+                    t_top1 = t_logits[t_resp_mask].argmax(dim=-1)
+                    self.opsd_io_writer.append({
+                        'step': self.state.global_step,
+                        '=== TEACHER OUTPUT ===': '',
+                        'teacher_top1_decoded': self.processing_class.decode(t_top1, skip_special_tokens=True),
+                        'loss_value': float(loss.item()),
+                    })
+
             if self.args.sft_alpha > 0 and data_source != DataSource.STUDENT:
                 loss = loss + self.args.sft_alpha * outputs_student.loss
         # Separate teacher model provided
