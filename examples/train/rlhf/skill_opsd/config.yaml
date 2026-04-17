@@ -1,0 +1,108 @@
+# /home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd/config.yaml
+#
+# Global config for Skill-Informed In-Context Self-Distillation.
+# Field values marked `# from plan §X` are derived from IMPLEMENTATION_PLAN.md.
+# Values without citation are agent-chosen defaults (to be refined per Task).
+#
+# Plan reference: /home/qzheng19/IMPLEMENTATION_PLAN.md
+
+project:
+  name: skill_opsd
+  base_model: Qwen/Qwen3-4B                 # from plan §环境前提 & §Task 0.1 line 109
+  lora_r: 64                                # from plan §环境前提 line 109
+  lora_alpha: 128                           # from plan §环境前提 line 109
+  benchmark: aime25                         # from plan §Task 5.3 line 515 (also math_500, gsm8k)
+  baseline_score: 0.2667                    # from plan §环境前提 line 11 (AIME2025 @100 steps, Qwen3-4B)
+
+paths:
+  ms_swift_root: /home/qzheng19/ms-swift
+  workspace: /home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd
+  skill_library: /home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd/skill_library.jsonl
+  train_data: /home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd/train_with_context.jsonl
+  results: /home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd/results.md
+  reference_repos:
+    opsd: /home/qzheng19/OPSD
+    skillrl: /home/qzheng19/SkillRL
+    evolver: /home/qzheng19/EvolveR
+    ceil: /home/qzheng19/CEIL
+    genicl: /home/qzheng19/GenICL_preferred
+    self_icl: /home/qzheng19/Self-ICL
+    promptagent: /home/qzheng19/PromptAgent
+    sdft: /home/qzheng19/SDFT
+    sdpo: /home/qzheng19/SDPO
+    reasoning_bank: /home/qzheng19/reasoning-bank
+
+skill_extraction:                           # Task 2.1
+  dedup_similarity_threshold: 0.85          # from plan §Task 2.1 line 257 (EvolveR SIMILARITY_THRESHOLD)
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2  # from plan §Task 2.1 line 279
+  target_skill_count_min: 30                # from plan §验证矩阵 line 559 (30-80 after dedup)
+  target_skill_count_max: 80                # from plan §验证矩阵 line 559
+
+skill_filter:                               # Task 2.2
+  kl_threshold: 0.01                        # from plan §Task 2.2 line 312 (default 0.01)
+  filter_keep_ratio_min: 0.5                # derived from plan §验证矩阵 line 560 (filter 10-50%)
+  filter_keep_ratio_max: 0.9                # derived from plan §验证矩阵 line 560
+  metric_score_formula: "(success_count + 1) / (usage_count + 2)"  # from plan §Task 2.2 line 309 (EvolveR)
+
+self_icl:                                   # Task 3.1
+  pseudo_input_count: 3                     # from plan §Task 3.1 line 341 (3 similar problems per seed)
+  target_pseudo_skill_min: 10               # from plan §验证矩阵 line 561 (10-20 pseudo skills)
+  target_pseudo_skill_max: 20               # from plan §验证矩阵 line 561
+
+context_select:                             # Task 3.2
+  mode: ceil                                # from plan §Task 3.2 line 382 (default ceil; alt: genicl)
+  top_k: 3                                  # from plan §验证矩阵 line 562 (top-3 per query)
+
+context_builder:                            # Task 3.3
+  optimize_context: false                   # from plan §Task 3.3 line 410 (optional flag)
+  promptagent_iters: 3                      # from plan §Task 3.3 line 420 (3 greedy rounds)
+  num_validation_problems: 10               # from plan §Task 3.3 line 421 (10 validation problems)
+
+training:                                   # Task 1.3 + 4.1
+  temperature: 1.1                          # from plan §Task 1.3 line 216 & §Task 4.1 line 457
+  top_p: 0.95                               # from plan §Task 1.3 line 211 (OPSD run_opsd_1b.sh)
+  top_k: 20                                 # from plan §Task 1.3 line 211
+  beta: 0.0                                 # from plan §Task 1.3 line 216 & §Task 4.1 line 457
+  jsd_token_clip: 0.05                      # from plan §Task 1.1 line 147 & §Task 4.1 line 457
+  use_ema_teacher: false                    # from plan §Task 1.2 line 194 (default false)
+  ema_decay: 0.999                          # from plan §Task 1.2 line 194 (default 0.999)
+  max_steps_phase3: 300                     # from plan §Task 4.1 line 458
+  max_steps_loop_round: 100                 # baseline validated step count (from plan §环境前提 line 11)
+  # Inherited from OPSD baseline (validated)
+  lr: 2.0e-5                                # from plan §环境前提 line 109
+  lmbda: 1.0                                # from plan §环境前提 line 109 (pure on-policy)
+  max_completion_length: 2048               # from plan §opsd.sh / CLAUDE.md
+  max_length: 8192                          # from opsd.sh line 61
+  per_device_train_batch_size: 4            # from opsd.sh line 55
+  gradient_accumulation_steps: 1            # from opsd.sh line 56
+  nproc_per_node: 8                         # from opsd.sh line 32
+
+trajectory_collect:                         # Task 5.1
+  num_samples: 200                          # from plan §Task 5.1 line 471 & §验证矩阵 line 559
+  answer_regex: '\\boxed\\{([^}]+)\\}'      # from plan §Task 5.1 line 475
+
+loop:                                       # Task 5.3
+  rounds: 3                                 # from plan §Task 5.3 line 506
+  eval_datasets:                            # from plan §Task 5.3 line 515
+    - aime25
+    - math_500
+    - gsm8k
+
+experiments:                                # from plan §最终对比实验 lines 571-579
+  A_baseline_opsd:       {beta: 0.5, temperature: 1.2, jsd_token_clip: null, teacher: solution}
+  B_original_params:     {beta: 0.0, temperature: 1.1, jsd_token_clip: 0.05, teacher: solution}
+  C_skill_context:       {beta: 0.0, temperature: 1.1, jsd_token_clip: 0.05, teacher: skill_context}
+  D_kl_filter:           {base: C, extra: kl_filter}
+  E_ceil_select:         {base: D, select_mode: ceil}
+  F_promptagent:         {base: E, optimize_context: true}
+  G_full_loop:           {base: F, rounds: 3}
+  H_ema_teacher:         {base: C, use_ema_teacher: true, ema_decay: 0.999}
+  I_tr_tl:               {base: C, ablation: [full, structure_only, content_only]}
+
+env_notes:
+  - "conda activate opsd"
+  - "DSPy 3.1.3 升了 datasets 到 4.8.4 (ms-swift 需 <4.0) —— 训练前需 pip install 'datasets<4.0'"
+  - "Ray 收尾: ray stop --force (避免僵尸进程堆积)"
+  - "accelerate 崩了要手动清理子进程 (fd 会挂住)"
+  - "Wandb 加 disable_stats 参数避免系统监控开销"
+  - "OPSD/SkillRL 是用户 fork 版本, 行号可能与 IMPLEMENTATION_PLAN.md 偏移; 按函数名定位而非行号"

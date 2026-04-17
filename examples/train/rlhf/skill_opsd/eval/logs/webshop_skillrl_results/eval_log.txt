@@ -1,0 +1,937 @@
+2026-04-13 10:34:09,573	INFO worker.py:2004 -- Started a local Ray instance. View the dashboard at [1m[32m127.0.0.1:8265 [39m[22m
+[2026-04-13 10:34:09,584 I 1085863 1085863] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1
+/home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[33m(raylet)[0m [2026-04-13 10:34:10,768 I 1086973 1086973] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1
+[36m(TaskRunner pid=1092686)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1
+[36m(TaskRunner pid=1092686)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+[36m(TaskRunner pid=1092686)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+[36m(TaskRunner pid=1092686)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[33m(raylet)[0m [2026-04-13 10:34:11,754 I 1092686 1092686] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1[32m [repeated 3x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+ray init kwargs: {'num_cpus': None, 'runtime_env': {'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN', 'VLLM_LOGGING_LEVEL': 'WARN', 'VLLM_ALLOW_RUNTIME_LORA_UPDATING': 'true', 'VLLM_ALLREDUCE_USE_SYMM_MEM': '0', 'CUDA_DEVICE_MAX_CONNECTIONS': '1', 'NCCL_CUMEM_ENABLE': '0'}, 'working_dir': None}}
+[36m(TaskRunner pid=1092686)[0m {'actor_rollout_ref': {'actor': {'checkpoint': {'contents': ['model',
+[36m(TaskRunner pid=1092686)[0m                                                              'optimizer',
+[36m(TaskRunner pid=1092686)[0m                                                              'extra']},
+[36m(TaskRunner pid=1092686)[0m                                  'clip_ratio': 0.2,
+[36m(TaskRunner pid=1092686)[0m                                  'clip_ratio_c': 3.0,
+[36m(TaskRunner pid=1092686)[0m                                  'clip_ratio_high': 0.2,
+[36m(TaskRunner pid=1092686)[0m                                  'clip_ratio_low': 0.2,
+[36m(TaskRunner pid=1092686)[0m                                  'entropy_coeff': 0.001,
+[36m(TaskRunner pid=1092686)[0m                                  'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=1092686)[0m                                                  'offload_policy': False,
+[36m(TaskRunner pid=1092686)[0m                                                  'optimizer_offload': True,
+[36m(TaskRunner pid=1092686)[0m                                                  'param_offload': True,
+[36m(TaskRunner pid=1092686)[0m                                                  'reshard_after_forward': True,
+[36m(TaskRunner pid=1092686)[0m                                                  'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=1092686)[0m                                  'grad_clip': 1.0,
+[36m(TaskRunner pid=1092686)[0m                                  'invalid_action_penalty_coef': 0.1,
+[36m(TaskRunner pid=1092686)[0m                                  'kl_loss_coef': 0.01,
+[36m(TaskRunner pid=1092686)[0m                                  'kl_loss_type': 'low_var_kl',
+[36m(TaskRunner pid=1092686)[0m                                  'loss_agg_mode': 'token-mean',
+[36m(TaskRunner pid=1092686)[0m                                  'optim': {'lr': 1e-06,
+[36m(TaskRunner pid=1092686)[0m                                            'lr_warmup_steps': -1,
+[36m(TaskRunner pid=1092686)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=1092686)[0m                                            'min_lr_ratio': 0.0,
+[36m(TaskRunner pid=1092686)[0m                                            'num_cycles': 0.5,
+[36m(TaskRunner pid=1092686)[0m                                            'total_training_steps': -1,
+[36m(TaskRunner pid=1092686)[0m                                            'warmup_style': 'constant',
+[36m(TaskRunner pid=1092686)[0m                                            'weight_decay': 0.01},
+[36m(TaskRunner pid=1092686)[0m                                  'policy_loss': {'loss_mode': 'vanilla'},
+[36m(TaskRunner pid=1092686)[0m                                  'ppo_epochs': 1,
+[36m(TaskRunner pid=1092686)[0m                                  'ppo_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=1092686)[0m                                  'ppo_micro_batch_size': None,
+[36m(TaskRunner pid=1092686)[0m                                  'ppo_micro_batch_size_per_gpu': 4,
+[36m(TaskRunner pid=1092686)[0m                                  'ppo_mini_batch_size': 64,
+[36m(TaskRunner pid=1092686)[0m                                  'shuffle': False,
+[36m(TaskRunner pid=1092686)[0m                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=1092686)[0m                                  'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=1092686)[0m                                  'use_dynamic_bsz': False,
+[36m(TaskRunner pid=1092686)[0m                                  'use_invalid_action_penalty': True,
+[36m(TaskRunner pid=1092686)[0m                                  'use_kl_loss': True,
+[36m(TaskRunner pid=1092686)[0m                                  'use_torch_compile': True},
+[36m(TaskRunner pid=1092686)[0m                        'hybrid_engine': True,
+[36m(TaskRunner pid=1092686)[0m                        'model': {'enable_activation_offload': False,
+[36m(TaskRunner pid=1092686)[0m                                  'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=1092686)[0m                                  'external_lib': None,
+[36m(TaskRunner pid=1092686)[0m                                  'lora_alpha': 16,
+[36m(TaskRunner pid=1092686)[0m                                  'lora_rank': 0,
+[36m(TaskRunner pid=1092686)[0m                                  'override_config': {},
+[36m(TaskRunner pid=1092686)[0m                                  'path': '/data/qzheng19/Webshop-7B-RL/hf',
+[36m(TaskRunner pid=1092686)[0m                                  'target_modules': 'all-linear',
+[36m(TaskRunner pid=1092686)[0m                                  'trust_remote_code': False,
+[36m(TaskRunner pid=1092686)[0m                                  'use_fused_kernels': False,
+[36m(TaskRunner pid=1092686)[0m                                  'use_liger': False,
+[36m(TaskRunner pid=1092686)[0m                                  'use_remove_padding': True,
+[36m(TaskRunner pid=1092686)[0m                                  'use_shm': False},
+[36m(TaskRunner pid=1092686)[0m                        'ref': {'fsdp_config': {'param_offload': True,
+[36m(TaskRunner pid=1092686)[0m                                                'reshard_after_forward': True,
+[36m(TaskRunner pid=1092686)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=1092686)[0m                                'log_prob_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=1092686)[0m                                'log_prob_micro_batch_size': None,
+[36m(TaskRunner pid=1092686)[0m                                'log_prob_micro_batch_size_per_gpu': 4,
+[36m(TaskRunner pid=1092686)[0m                                'log_prob_use_dynamic_bsz': False,
+[36m(TaskRunner pid=1092686)[0m                                'strategy': 'fsdp',
+[36m(TaskRunner pid=1092686)[0m                                'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=1092686)[0m                                'use_torch_compile': True},
+[36m(TaskRunner pid=1092686)[0m                        'rollout': {'chat_scheduler': None,
+[36m(TaskRunner pid=1092686)[0m                                    'disable_log_stats': True,
+[36m(TaskRunner pid=1092686)[0m                                    'do_sample': True,
+[36m(TaskRunner pid=1092686)[0m                                    'dtype': 'bfloat16',
+[36m(TaskRunner pid=1092686)[0m                                    'enable_chunked_prefill': True,
+[36m(TaskRunner pid=1092686)[0m                                    'enforce_eager': False,
+[36m(TaskRunner pid=1092686)[0m                                    'engine_kwargs': {'sglang': {'attention_backend': None},
+[36m(TaskRunner pid=1092686)[0m                                                      'vllm': {'swap_space': None}},
+[36m(TaskRunner pid=1092686)[0m                                    'free_cache_engine': False,
+[36m(TaskRunner pid=1092686)[0m                                    'gpu_memory_utilization': 0.7,
+[36m(TaskRunner pid=1092686)[0m                                    'ignore_eos': False,
+[36m(TaskRunner pid=1092686)[0m                                    'layered_summon': False,
+[36m(TaskRunner pid=1092686)[0m                                    'load_format': 'dummy_dtensor',
+[36m(TaskRunner pid=1092686)[0m                                    'log_prob_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=1092686)[0m                                    'log_prob_micro_batch_size': None,
+[36m(TaskRunner pid=1092686)[0m                                    'log_prob_micro_batch_size_per_gpu': 8,
+[36m(TaskRunner pid=1092686)[0m                                    'log_prob_use_dynamic_bsz': False,
+[36m(TaskRunner pid=1092686)[0m                                    'max_model_len': None,
+[36m(TaskRunner pid=1092686)[0m                                    'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=1092686)[0m                                    'max_num_seqs': 256,
+[36m(TaskRunner pid=1092686)[0m                                    'mode': 'sync',
+[36m(TaskRunner pid=1092686)[0m                                    'multi_turn': {'enable': False,
+[36m(TaskRunner pid=1092686)[0m                                                   'format': 'chatml',
+[36m(TaskRunner pid=1092686)[0m                                                   'max_turns': None,
+[36m(TaskRunner pid=1092686)[0m                                                   'tool_config_path': None},
+[36m(TaskRunner pid=1092686)[0m                                    'n': 1,
+[36m(TaskRunner pid=1092686)[0m                                    'name': 'vllm',
+[36m(TaskRunner pid=1092686)[0m                                    'prompt_length': 6000,
+[36m(TaskRunner pid=1092686)[0m                                    'response_length': 768,
+[36m(TaskRunner pid=1092686)[0m                                    'temperature': 1.0,
+[36m(TaskRunner pid=1092686)[0m                                    'tensor_model_parallel_size': 4,
+[36m(TaskRunner pid=1092686)[0m                                    'top_k': -1,
+[36m(TaskRunner pid=1092686)[0m                                    'top_p': 1,
+[36m(TaskRunner pid=1092686)[0m                                    'use_fire_sampling': False,
+[36m(TaskRunner pid=1092686)[0m                                    'val_kwargs': {'do_sample': True,
+[36m(TaskRunner pid=1092686)[0m                                                   'n': 1,
+[36m(TaskRunner pid=1092686)[0m                                                   'temperature': 0.4,
+[36m(TaskRunner pid=1092686)[0m                                                   'top_k': -1,
+[36m(TaskRunner pid=1092686)[0m                                                   'top_p': 1.0}}},
+[36m(TaskRunner pid=1092686)[0m  'algorithm': {'adv_estimator': 'grpo',
+[36m(TaskRunner pid=1092686)[0m                'filter_groups': {'enable': False, 'max_num_gen_batches': 10},
+[36m(TaskRunner pid=1092686)[0m                'gamma': 1.0,
+[36m(TaskRunner pid=1092686)[0m                'gigpo': {'enable_similarity': False,
+[36m(TaskRunner pid=1092686)[0m                          'mode': 'mean_norm',
+[36m(TaskRunner pid=1092686)[0m                          'similarity_thresh': 0.95,
+[36m(TaskRunner pid=1092686)[0m                          'step_advantage_w': 1.0},
+[36m(TaskRunner pid=1092686)[0m                'kl_ctrl': {'horizon': 10000,
+[36m(TaskRunner pid=1092686)[0m                            'kl_coef': 0.001,
+[36m(TaskRunner pid=1092686)[0m                            'target_kl': 0.1,
+[36m(TaskRunner pid=1092686)[0m                            'type': 'fixed'},
+[36m(TaskRunner pid=1092686)[0m                'kl_penalty': 'kl',
+[36m(TaskRunner pid=1092686)[0m                'lam': 1.0,
+[36m(TaskRunner pid=1092686)[0m                'norm_adv_by_std_in_grpo': True,
+[36m(TaskRunner pid=1092686)[0m                'pf_ppo': {'reweight_method': 'pow', 'weight_pow': 2.0},
+[36m(TaskRunner pid=1092686)[0m                'use_kl_in_reward': False,
+[36m(TaskRunner pid=1092686)[0m                'use_pf_ppo': False},
+[36m(TaskRunner pid=1092686)[0m  'critic': {'checkpoint': {'contents': ['model', 'optimizer', 'extra']},
+[36m(TaskRunner pid=1092686)[0m             'cliprange_value': 0.5,
+[36m(TaskRunner pid=1092686)[0m             'forward_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=1092686)[0m             'forward_micro_batch_size': None,
+[36m(TaskRunner pid=1092686)[0m             'forward_micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=1092686)[0m             'grad_clip': 1.0,
+[36m(TaskRunner pid=1092686)[0m             'loss_agg_mode': 'token-mean',
+[36m(TaskRunner pid=1092686)[0m             'model': {'enable_activation_offload': False,
+[36m(TaskRunner pid=1092686)[0m                       'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=1092686)[0m                       'external_lib': None,
+[36m(TaskRunner pid=1092686)[0m                       'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=1092686)[0m                                       'offload_policy': False,
+[36m(TaskRunner pid=1092686)[0m                                       'optimizer_offload': False,
+[36m(TaskRunner pid=1092686)[0m                                       'param_offload': False,
+[36m(TaskRunner pid=1092686)[0m                                       'reshard_after_forward': True,
+[36m(TaskRunner pid=1092686)[0m                                       'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=1092686)[0m                       'lora_alpha': 16,
+[36m(TaskRunner pid=1092686)[0m                       'lora_rank': 0,
+[36m(TaskRunner pid=1092686)[0m                       'override_config': {},
+[36m(TaskRunner pid=1092686)[0m                       'path': '~/models/deepseek-llm-7b-chat',
+[36m(TaskRunner pid=1092686)[0m                       'target_modules': 'all-linear',
+[36m(TaskRunner pid=1092686)[0m                       'tokenizer_path': '/data/qzheng19/Webshop-7B-RL/hf',
+[36m(TaskRunner pid=1092686)[0m                       'trust_remote_code': False,
+[36m(TaskRunner pid=1092686)[0m                       'use_remove_padding': False,
+[36m(TaskRunner pid=1092686)[0m                       'use_shm': False},
+[36m(TaskRunner pid=1092686)[0m             'optim': {'lr': 1e-05,
+[36m(TaskRunner pid=1092686)[0m                       'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=1092686)[0m                       'min_lr_ratio': None,
+[36m(TaskRunner pid=1092686)[0m                       'total_training_steps': -1,
+[36m(TaskRunner pid=1092686)[0m                       'warmup_style': 'constant',
+[36m(TaskRunner pid=1092686)[0m                       'weight_decay': 0.01},
+[36m(TaskRunner pid=1092686)[0m             'ppo_epochs': 1,
+[36m(TaskRunner pid=1092686)[0m             'ppo_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=1092686)[0m             'ppo_micro_batch_size': None,
+[36m(TaskRunner pid=1092686)[0m             'ppo_micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=1092686)[0m             'ppo_mini_batch_size': 64,
+[36m(TaskRunner pid=1092686)[0m             'rollout_n': 1,
+[36m(TaskRunner pid=1092686)[0m             'shuffle': False,
+[36m(TaskRunner pid=1092686)[0m             'strategy': 'fsdp',
+[36m(TaskRunner pid=1092686)[0m             'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=1092686)[0m             'use_dynamic_bsz': False},
+[36m(TaskRunner pid=1092686)[0m  'custom_reward_function': {'name': 'compute_score', 'path': None},
+[36m(TaskRunner pid=1092686)[0m  'data': {'apply_chat_template_kwargs': {},
+[36m(TaskRunner pid=1092686)[0m           'custom_cls': {'name': None, 'path': None},
+[36m(TaskRunner pid=1092686)[0m           'filter_overlong_prompts': True,
+[36m(TaskRunner pid=1092686)[0m           'filter_overlong_prompts_workers': 1,
+[36m(TaskRunner pid=1092686)[0m           'image_key': 'images',
+[36m(TaskRunner pid=1092686)[0m           'max_prompt_length': 6000,
+[36m(TaskRunner pid=1092686)[0m           'max_response_length': 768,
+[36m(TaskRunner pid=1092686)[0m           'prompt_key': 'prompt',
+[36m(TaskRunner pid=1092686)[0m           'return_full_prompt': False,
+[36m(TaskRunner pid=1092686)[0m           'return_raw_chat': True,
+[36m(TaskRunner pid=1092686)[0m           'return_raw_input_ids': False,
+[36m(TaskRunner pid=1092686)[0m           'reward_fn_key': 'data_source',
+[36m(TaskRunner pid=1092686)[0m           'shuffle': True,
+[36m(TaskRunner pid=1092686)[0m           'tokenizer': None,
+[33m(raylet)[0m [2026-04-13 10:34:19,482 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1705 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:34:22,226 I 1096277 1096277] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1[32m [repeated 128x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:34:29,503 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1651 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(pid=1093040)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1
+[36m(pid=1093040)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+[36m(pid=1093040)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+[36m(pid=1093040)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[36m(WebshopWorker pid=1093035)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.
+[36m(WebshopWorker pid=1093035)[0m   cli: click.BaseCommand,
+[36m(WebshopWorker pid=1093040)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/spacy/cli/_util.py:23: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.
+[36m(WebshopWorker pid=1093040)[0m   from click.parser import split_arg_string
+[36m(WebshopWorker pid=1093040)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.
+[36m(WebshopWorker pid=1093040)[0m   from click.parser import split_arg_string
+[36m(WebshopWorker pid=1093035)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+[36m(WebshopWorker pid=1093035)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+[36m(WebshopWorker pid=1093040)[0m   0%|          | 0/1000 [00:00<?, ?it/s]
+[36m(WebshopWorker pid=1093040)[0m 100%|██████████| 1000/1000 [00:00<00:00, 16512.75it/s]
+[36m(WebshopWorker pid=1093035)[0m 100%|██████████| 1000/1000 [00:00<00:00, 28528.80it/s]
+[36m(pid=1093053)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1[32m [repeated 38x across cluster][0m
+[36m(pid=1093053)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.[32m [repeated 38x across cluster][0m
+[36m(pid=1093053)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.[32m [repeated 38x across cluster][0m
+[36m(pid=1093053)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.[32m [repeated 38x across cluster][0m
+[36m(WebshopWorker pid=1093042)[0m 100%|██████████| 1000/1000 [00:00<00:00, 22309.53it/s]
+[36m(WebshopWorker pid=1093061)[0m 100%|██████████| 1000/1000 [00:00<00:00, 36567.92it/s]
+[36m(WebshopWorker pid=1093040)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+[36m(WebshopWorker pid=1093040)[0m   warnings.warn(
+[36m(WebshopWorker pid=1093040)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/
+[36m(WebshopWorker pid=1093040)[0m You can set `disable_env_checker=True` to disable this check.[0m
+[36m(WebshopWorker pid=1093040)[0m   logger.warn(
+[36m(WebshopWorker pid=1093413)[0m 100%|██████████| 1000/1000 [00:00<00:00, 27534.33it/s]
+[36m(WebshopWorker pid=1095107)[0m 100%|██████████| 1000/1000 [00:00<00:00, 29432.89it/s]
+[36m(WebshopWorker pid=1093384)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093384)[0m   cli: click.BaseCommand,[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093046)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 42x across cluster][0m
+[36m(WebshopWorker pid=1093046)[0m   from click.parser import split_arg_string[32m [repeated 42x across cluster][0m
+[36m(WebshopWorker pid=1093384)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093384)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093052)[0m 100%|██████████| 1000/1000 [00:00<00:00, 18535.33it/s]
+[33m(raylet)[0m [2026-04-13 10:34:39,515 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1608 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WebshopWorker pid=1093048)[0m 100%|██████████| 1000/1000 [00:00<00:00, 38406.92it/s]
+[36m(WebshopWorker pid=1093402)[0m 100%|██████████| 1000/1000 [00:00<00:00, 19253.35it/s]
+[36m(WebshopWorker pid=1093056)[0m 100%|██████████| 1000/1000 [00:00<00:00, 29627.49it/s]
+[36m(WebshopWorker pid=1093390)[0m 100%|██████████| 1000/1000 [00:00<00:00, 21862.64it/s]
+[36m(WebshopWorker pid=1093384)[0m 100%|██████████| 1000/1000 [00:00<00:00, 26960.19it/s]
+[36m(WebshopWorker pid=1093384)[0m   0%|          | 0/1000 [00:00<?, ?it/s][32m [repeated 20x across cluster][0m
+[36m(pid=1096527)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1[32m [repeated 72x across cluster][0m
+[36m(pid=1096527)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.[32m [repeated 72x across cluster][0m
+[36m(pid=1096527)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.[32m [repeated 72x across cluster][0m
+[36m(pid=1096527)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.[32m [repeated 72x across cluster][0m
+[36m(WebshopWorker pid=1093398)[0m 100%|██████████| 1000/1000 [00:00<00:00, 45041.92it/s]
+[36m(WebshopWorker pid=1095558)[0m 100%|██████████| 1000/1000 [00:00<00:00, 25260.35it/s]
+[36m(WebshopWorker pid=1093392)[0m 100%|██████████| 1000/1000 [00:00<00:00, 25597.03it/s]
+[36m(WebshopWorker pid=1093438)[0m 100%|██████████| 1000/1000 [00:00<00:00, 43790.11it/s]
+[36m(WebshopWorker pid=1093046)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 23x across cluster][0m
+[36m(WebshopWorker pid=1093046)[0m   warnings.warn([32m [repeated 23x across cluster][0m
+[36m(WebshopWorker pid=1093046)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 23x across cluster][0m
+[36m(WebshopWorker pid=1093046)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 23x across cluster][0m
+[36m(WebshopWorker pid=1093046)[0m   logger.warn([32m [repeated 23x across cluster][0m
+[36m(WebshopWorker pid=1093412)[0m 100%|██████████| 1000/1000 [00:00<00:00, 36235.89it/s]
+[36m(WebshopWorker pid=1093036)[0m 100%|██████████| 1000/1000 [00:00<00:00, 22821.55it/s]
+[36m(WebshopWorker pid=1093531)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 52x across cluster][0m
+[36m(WebshopWorker pid=1093531)[0m   cli: click.BaseCommand,[32m [repeated 52x across cluster][0m
+[36m(WebshopWorker pid=1093531)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 100x across cluster][0m
+[36m(WebshopWorker pid=1093531)[0m   from click.parser import split_arg_string[32m [repeated 100x across cluster][0m
+[36m(WebshopWorker pid=1093034)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 45x across cluster][0m
+[36m(WebshopWorker pid=1093034)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 45x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:34:43,654 I 1111348 1111348] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1
+[36m(WebshopWorker pid=1093385)[0m 100%|██████████| 1000/1000 [00:00<00:00, 25616.26it/s]
+[36m(WebshopWorker pid=1093500)[0m 100%|██████████| 1000/1000 [00:00<00:00, 24975.16it/s]
+[36m(WebshopWorker pid=1093053)[0m 100%|██████████| 1000/1000 [00:00<00:00, 19224.23it/s]
+[36m(WebshopWorker pid=1093049)[0m 100%|██████████| 1000/1000 [00:00<00:00, 35297.27it/s]
+[36m(WebshopWorker pid=1093051)[0m 100%|██████████| 1000/1000 [00:00<00:00, 34931.57it/s]
+[36m(WebshopWorker pid=1095652)[0m 100%|██████████| 1000/1000 [00:00<00:00, 20800.23it/s]
+[36m(WebshopWorker pid=1093454)[0m 100%|██████████| 1000/1000 [00:00<00:00, 10380.94it/s]
+[36m(WebshopWorker pid=1093507)[0m 100%|██████████| 1000/1000 [00:00<00:00, 18651.46it/s]
+[36m(WebshopWorker pid=1093063)[0m 100%|██████████| 1000/1000 [00:00<00:00, 16184.35it/s]
+[36m(WebshopWorker pid=1093408)[0m 100%|██████████| 1000/1000 [00:00<00:00, 27733.50it/s]
+[36m(WebshopWorker pid=1093388)[0m 100%|██████████| 1000/1000 [00:00<00:00, 53269.80it/s]
+[36m(WebshopWorker pid=1093404)[0m 100%|██████████| 1000/1000 [00:00<00:00, 27666.55it/s]
+[36m(WebshopWorker pid=1093393)[0m 100%|██████████| 1000/1000 [00:00<00:00, 44723.98it/s]
+[36m(WebshopWorker pid=1093423)[0m 100%|██████████| 1000/1000 [00:00<00:00, 40457.05it/s]
+[36m(WebshopWorker pid=1096277)[0m 100%|██████████| 1000/1000 [00:00<00:00, 46365.88it/s]
+[36m(WebshopWorker pid=1095311)[0m 100%|██████████| 1000/1000 [00:00<00:00, 32994.84it/s]
+[36m(WebshopWorker pid=1093399)[0m 100%|██████████| 1000/1000 [00:00<00:00, 33539.14it/s]
+[36m(WebshopWorker pid=1093414)[0m 100%|██████████| 1000/1000 [00:00<00:00, 37273.76it/s]
+[36m(WebshopWorker pid=1093414)[0m   0%|          | 0/1000 [00:00<?, ?it/s][32m [repeated 35x across cluster][0m
+[36m(WebshopWorker pid=1093043)[0m 100%|██████████| 1000/1000 [00:00<00:00, 20025.71it/s]
+[36m(WebshopWorker pid=1095402)[0m 100%|██████████| 1000/1000 [00:00<00:00, 17812.33it/s]
+[36m(WebshopWorker pid=1093488)[0m 100%|██████████| 1000/1000 [00:00<00:00, 24659.47it/s]
+[36m(WebshopWorker pid=1093382)[0m 100%|██████████| 1000/1000 [00:00<00:00, 50261.28it/s]
+[36m(WebshopWorker pid=1093031)[0m 100%|██████████| 1000/1000 [00:00<00:00, 37684.67it/s]
+[36m(pid=1093467)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1[32m [repeated 17x across cluster][0m
+[36m(pid=1093467)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.[32m [repeated 17x across cluster][0m
+[36m(pid=1093467)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.[32m [repeated 17x across cluster][0m
+[36m(pid=1093467)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.[32m [repeated 17x across cluster][0m
+[36m(WebshopWorker pid=1093045)[0m 100%|██████████| 1000/1000 [00:00<00:00, 38181.06it/s]
+[36m(WebshopWorker pid=1095562)[0m 100%|██████████| 1000/1000 [00:00<00:00, 27911.41it/s]
+[36m(WebshopWorker pid=1093427)[0m 100%|██████████| 1000/1000 [00:00<00:00, 54099.81it/s]
+[36m(WebshopWorker pid=1093531)[0m 100%|██████████| 1000/1000 [00:00<00:00, 49337.79it/s]
+[36m(WebshopWorker pid=1096234)[0m 100%|██████████| 1000/1000 [00:00<00:00, 26038.48it/s]
+[36m(WebshopWorker pid=1093381)[0m 100%|██████████| 1000/1000 [00:00<00:00, 18332.95it/s]
+[36m(WebshopWorker pid=1093512)[0m 100%|██████████| 1000/1000 [00:00<00:00, 24217.79it/s]
+[36m(WebshopWorker pid=1093487)[0m 100%|██████████| 1000/1000 [00:00<00:00, 47147.14it/s]
+[36m(WebshopWorker pid=1093448)[0m 100%|██████████| 1000/1000 [00:00<00:00, 32552.85it/s]
+[36m(WebshopWorker pid=1093033)[0m 100%|██████████| 1000/1000 [00:00<00:00, 18954.91it/s]
+[36m(WebshopWorker pid=1093387)[0m 100%|██████████| 1000/1000 [00:00<00:00, 28686.06it/s]
+[36m(WebshopWorker pid=1093400)[0m 100%|██████████| 1000/1000 [00:00<00:00, 47000.27it/s]
+[36m(WebshopWorker pid=1093457)[0m 100%|██████████| 1000/1000 [00:00<00:00, 28359.05it/s]
+[36m(WebshopWorker pid=1093055)[0m 100%|██████████| 1000/1000 [00:00<00:00, 43057.81it/s]
+[36m(WebshopWorker pid=1093488)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 43x across cluster][0m
+[36m(WebshopWorker pid=1093488)[0m   warnings.warn([32m [repeated 43x across cluster][0m
+[36m(WebshopWorker pid=1093488)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 43x across cluster][0m
+[36m(WebshopWorker pid=1093488)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 43x across cluster][0m
+[36m(WebshopWorker pid=1093488)[0m   logger.warn([32m [repeated 43x across cluster][0m
+[36m(WebshopWorker pid=1093486)[0m 100%|██████████| 1000/1000 [00:00<00:00, 32575.60it/s]
+[36m(WebshopWorker pid=1093391)[0m 100%|██████████| 1000/1000 [00:00<00:00, 28762.19it/s]
+[36m(WebshopWorker pid=1093038)[0m 100%|██████████| 1000/1000 [00:00<00:00, 24640.92it/s]
+[36m(WebshopWorker pid=1095882)[0m 100%|██████████| 1000/1000 [00:00<00:00, 41534.75it/s]
+[36m(WebshopWorker pid=1093057)[0m 100%|██████████| 1000/1000 [00:00<00:00, 23308.29it/s]
+[36m(WebshopWorker pid=1093060)[0m 100%|██████████| 1000/1000 [00:00<00:00, 35539.83it/s]
+[36m(WebshopWorker pid=1095502)[0m 100%|██████████| 1000/1000 [00:00<00:00, 46343.34it/s]
+[36m(WebshopWorker pid=1096002)[0m 100%|██████████| 1000/1000 [00:00<00:00, 33573.50it/s]
+[36m(WebshopWorker pid=1093403)[0m 100%|██████████| 1000/1000 [00:00<00:00, 51423.47it/s]
+[36m(WebshopWorker pid=1093544)[0m 100%|██████████| 1000/1000 [00:00<00:00, 25282.12it/s]
+[36m(WebshopWorker pid=1093434)[0m 100%|██████████| 1000/1000 [00:00<00:00, 29659.33it/s]
+[36m(WebshopWorker pid=1093444)[0m 100%|██████████| 1000/1000 [00:00<00:00, 34624.18it/s]
+[36m(WebshopWorker pid=1095706)[0m 100%|██████████| 1000/1000 [00:00<00:00, 43445.38it/s]
+[36m(WebshopWorker pid=1093397)[0m 100%|██████████| 1000/1000 [00:00<00:00, 53121.37it/s]
+[36m(WebshopWorker pid=1094140)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 51x across cluster][0m
+[36m(WebshopWorker pid=1094140)[0m   cli: click.BaseCommand,[32m [repeated 51x across cluster][0m
+[36m(WebshopWorker pid=1093477)[0m 100%|██████████| 1000/1000 [00:00<00:00, 32026.63it/s]
+[36m(WebshopWorker pid=1095564)[0m 100%|██████████| 1000/1000 [00:00<00:00, 49327.34it/s]
+[36m(WebshopWorker pid=1094140)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 104x across cluster][0m
+[36m(WebshopWorker pid=1094140)[0m   from click.parser import split_arg_string[32m [repeated 104x across cluster][0m
+[36m(WebshopWorker pid=1094140)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 58x across cluster][0m
+[36m(WebshopWorker pid=1094140)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 58x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:34:44,775 I 1111725 1111725] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1[32m [repeated 63x across cluster][0m
+[36m(WebshopWorker pid=1093497)[0m 100%|██████████| 1000/1000 [00:00<00:00, 39308.58it/s]
+[36m(WebshopWorker pid=1093768)[0m 100%|██████████| 1000/1000 [00:00<00:00, 25712.37it/s]
+[36m(WebshopWorker pid=1093044)[0m 100%|██████████| 1000/1000 [00:00<00:00, 49121.11it/s]
+[36m(WebshopWorker pid=1093386)[0m 100%|██████████| 1000/1000 [00:00<00:00, 72064.60it/s]
+[36m(WebshopWorker pid=1093452)[0m 100%|██████████| 1000/1000 [00:00<00:00, 47054.58it/s]
+[36m(WebshopWorker pid=1096509)[0m 100%|██████████| 1000/1000 [00:00<00:00, 43953.93it/s]
+[36m(WebshopWorker pid=1093869)[0m 100%|██████████| 1000/1000 [00:00<00:00, 29323.42it/s]
+[36m(WebshopWorker pid=1093394)[0m 100%|██████████| 1000/1000 [00:00<00:00, 54518.92it/s]
+[33m(raylet)[0m [2026-04-13 10:34:49,532 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1541 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WebshopWorker pid=1093059)[0m 100%|██████████| 1000/1000 [00:00<00:00, 57851.67it/s]
+[36m(WebshopWorker pid=1093492)[0m   0%|          | 0/1000 [00:00<?, ?it/s]100%|██████████| 1000/1000 [00:00<00:00, 56268.42it/s][32m [repeated 72x across cluster][0m
+[36m(pid=1111367)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1
+[36m(pid=1111367)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+[36m(pid=1111367)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+[36m(pid=1111367)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[36m(WebshopWorker pid=1093492)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 61x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m   warnings.warn([32m [repeated 61x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 61x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 61x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m   logger.warn([32m [repeated 61x across cluster][0m
+[36m(WebshopWorker pid=1093467)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=1093467)[0m   cli: click.BaseCommand,[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=1093467)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 8x across cluster][0m
+[36m(WebshopWorker pid=1093467)[0m   from click.parser import split_arg_string[32m [repeated 8x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 4x across cluster][0m
+[36m(pid=1111423)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1
+[36m(pid=1111423)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+[36m(pid=1111423)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+[36m(pid=1111423)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[36m(WebshopWorker pid=1111541)[0m   0%|          | 0/1000 [00:00<?, ?it/s]100%|██████████| 1000/1000 [00:00<00:00, 36150.94it/s]
+[36m(WebshopWorker pid=1111507)[0m 100%|██████████| 1000/1000 [00:00<00:00, 66969.57it/s]
+[36m(WebshopWorker pid=1111367)[0m 100%|██████████| 1000/1000 [00:00<00:00, 61262.91it/s]
+[36m(TaskRunner pid=1092686)[0m           'train_batch_size': 16,
+[36m(TaskRunner pid=1092686)[0m           'train_files': '/home/qzheng19/data/verl-agent/text/train.parquet',
+[36m(TaskRunner pid=1092686)[0m           'truncation': 'left',
+[36m(TaskRunner pid=1092686)[0m           'trust_remote_code': False,
+[36m(TaskRunner pid=1092686)[0m           'use_shm': False,
+[36m(TaskRunner pid=1092686)[0m           'val_batch_size': 64,
+[36m(TaskRunner pid=1092686)[0m           'val_files': '/home/qzheng19/data/verl-agent/text/test.parquet',
+[36m(TaskRunner pid=1092686)[0m           'video_key': 'videos'},
+[36m(TaskRunner pid=1092686)[0m  'env': {'alfworld': {'eval_dataset': 'eval_in_distribution'},
+[36m(TaskRunner pid=1092686)[0m          'env_name': 'Webshop',
+[36m(TaskRunner pid=1092686)[0m          'history_length': 2,
+[36m(TaskRunner pid=1092686)[0m          'max_steps': 15,
+[36m(TaskRunner pid=1092686)[0m          'resources_per_worker': {'num_cpus': 0.1, 'num_gpus': 0},
+[36m(TaskRunner pid=1092686)[0m          'rollout': {'n': 8},
+[36m(TaskRunner pid=1092686)[0m          'search': {'log_requests': False,
+[36m(TaskRunner pid=1092686)[0m                     'search_url': 'http://127.0.0.1:8000/retrieve',
+[36m(TaskRunner pid=1092686)[0m                     'timeout': 60,
+[36m(TaskRunner pid=1092686)[0m                     'topk': 3},
+[36m(TaskRunner pid=1092686)[0m          'seed': 0,
+[36m(TaskRunner pid=1092686)[0m          'skills_only_memory': {'enable_dynamic_update': False,
+[36m(TaskRunner pid=1092686)[0m                                 'skills_json_path': 'memory_data/webshop/claude_style_skills.json',
+[36m(TaskRunner pid=1092686)[0m                                 'top_k': 6},
+[36m(TaskRunner pid=1092686)[0m          'sokoban': {'dim_room': [6, 6],
+[36m(TaskRunner pid=1092686)[0m                      'mode': 'tiny_rgb_array',
+[36m(TaskRunner pid=1092686)[0m                      'num_boxes': 1,
+[36m(TaskRunner pid=1092686)[0m                      'search_depth': 30},
+[36m(TaskRunner pid=1092686)[0m          'use_skills_only_memory': True,
+[36m(TaskRunner pid=1092686)[0m          'webshop': {'human_goals': False, 'use_small': True}},
+[36m(TaskRunner pid=1092686)[0m  'ray_init': {'num_cpus': None},
+[36m(TaskRunner pid=1092686)[0m  'reward_model': {'enable': False,
+[36m(TaskRunner pid=1092686)[0m                   'forward_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=1092686)[0m                   'launch_reward_fn_async': False,
+[36m(TaskRunner pid=1092686)[0m                   'max_length': None,
+[36m(TaskRunner pid=1092686)[0m                   'micro_batch_size': None,
+[36m(TaskRunner pid=1092686)[0m                   'micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=1092686)[0m                   'model': {'external_lib': None,
+[36m(TaskRunner pid=1092686)[0m                             'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=1092686)[0m                                             'param_offload': False,
+[36m(TaskRunner pid=1092686)[0m                                             'reshard_after_forward': True,
+[36m(TaskRunner pid=1092686)[0m                                             'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=1092686)[0m                             'input_tokenizer': '/data/qzheng19/Webshop-7B-RL/hf',
+[36m(TaskRunner pid=1092686)[0m                             'path': '~/models/FsfairX-LLaMA3-RM-v0.1',
+[36m(TaskRunner pid=1092686)[0m                             'trust_remote_code': False,
+[36m(TaskRunner pid=1092686)[0m                             'use_fused_kernels': False,
+[36m(TaskRunner pid=1092686)[0m                             'use_remove_padding': False,
+[36m(TaskRunner pid=1092686)[0m                             'use_shm': False},
+[36m(TaskRunner pid=1092686)[0m                   'reward_manager': 'episode',
+[36m(TaskRunner pid=1092686)[0m                   'sandbox_fusion': {'max_concurrent': 64, 'url': None},
+[36m(TaskRunner pid=1092686)[0m                   'strategy': 'fsdp',
+[36m(TaskRunner pid=1092686)[0m                   'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=1092686)[0m                   'use_dynamic_bsz': False},
+[36m(TaskRunner pid=1092686)[0m  'trainer': {'balance_batch': True,
+[36m(TaskRunner pid=1092686)[0m              'critic_warmup': 0,
+[36m(TaskRunner pid=1092686)[0m              'default_hdfs_dir': None,
+[36m(TaskRunner pid=1092686)[0m              'default_local_dir': '/home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd/eval/logs/webshop_skillrl_results',
+[36m(TaskRunner pid=1092686)[0m              'del_local_ckpt_after_load': False,
+[36m(TaskRunner pid=1092686)[0m              'device': 'cuda',
+[36m(TaskRunner pid=1092686)[0m              'experiment_name': 'eval-webshop-skillrl-7b',
+[36m(TaskRunner pid=1092686)[0m              'log_val_generations': 0,
+[36m(TaskRunner pid=1092686)[0m              'logger': ['console', 'wandb'],
+[36m(TaskRunner pid=1092686)[0m              'max_actor_ckpt_to_keep': None,
+[36m(TaskRunner pid=1092686)[0m              'max_critic_ckpt_to_keep': None,
+[36m(TaskRunner pid=1092686)[0m              'n_gpus_per_node': 8,
+[36m(TaskRunner pid=1092686)[0m              'nnodes': 1,
+[36m(TaskRunner pid=1092686)[0m              'project_name': 'opsd-repro',
+[36m(TaskRunner pid=1092686)[0m              'ray_wait_register_center_timeout': 300,
+[36m(TaskRunner pid=1092686)[0m              'resume_from_path': None,
+[36m(TaskRunner pid=1092686)[0m              'resume_mode': 'auto',
+[36m(TaskRunner pid=1092686)[0m              'rollout_data_dir': None,
+[36m(TaskRunner pid=1092686)[0m              'save_freq': -1,
+[36m(TaskRunner pid=1092686)[0m              'test_freq': -1,
+[36m(TaskRunner pid=1092686)[0m              'total_epochs': 1,
+[36m(TaskRunner pid=1092686)[0m              'total_training_steps': None,
+[36m(TaskRunner pid=1092686)[0m              'val_before_train': True,
+[36m(TaskRunner pid=1092686)[0m              'val_only': True,
+[36m(TaskRunner pid=1092686)[0m              'validation_data_dir': None}}
+[36m(WebshopWorker pid=1093040)[0m Products loaded.
+[36m(WebshopWorker pid=1093040)[0m Keys cleaned.
+[36m(WebshopWorker pid=1093040)[0m Attributes loaded.
+[36m(WebshopWorker pid=1093040)[0m Loaded 6910 goals.
+[36m(WebshopWorker pid=1093384)[0m Products loaded.[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093384)[0m Keys cleaned.[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093384)[0m Attributes loaded.[32m [repeated 20x across cluster][0m
+[36m(WebshopWorker pid=1093398)[0m Loaded 6910 goals.[32m [repeated 24x across cluster][0m
+[33m(raylet)[0m WARNING: 414 PYTHON worker processes have been started on node: cf9561ea9b351292c17bf1f0625f06849201f38b35fd37efd1095773 with address: 172.22.224.28. This could be a result of using a large number of actors, or due to tasks blocked in ray.get() calls (see https://github.com/ray-project/ray/issues/3644 for some discussion of workarounds).
+[36m(TaskRunner pid=1092686)[0m range(500, 6910)
+[36m(WebshopWorker pid=1093399)[0m Products loaded.[32m [repeated 42x across cluster][0m
+[36m(WebshopWorker pid=1093399)[0m Keys cleaned.[32m [repeated 42x across cluster][0m
+[36m(WebshopWorker pid=1093414)[0m Attributes loaded.[32m [repeated 35x across cluster][0m
+[36m(WebshopWorker pid=1093045)[0m Loaded 6910 goals.[32m [repeated 45x across cluster][0m
+[36m(WebshopWorker pid=1095139)[0m Products loaded.[32m [repeated 63x across cluster][0m
+[36m(WebshopWorker pid=1095139)[0m Keys cleaned.[32m [repeated 63x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m Attributes loaded.[32m [repeated 72x across cluster][0m
+[36m(WebshopWorker pid=1093492)[0m Loaded 6910 goals.[32m [repeated 58x across cluster][0m
+[36m(WebshopWorker pid=1111541)[0m Products loaded.[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=1111541)[0m Keys cleaned.[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=1111541)[0m Attributes loaded.
+[36m(WebshopWorker pid=1111475)[0m 100%|██████████| 1000/1000 [00:00<00:00, 55504.44it/s]
+[36m(WebshopWorker pid=1111354)[0m 100%|██████████| 1000/1000 [00:00<00:00, 73424.55it/s]
+[36m(WebshopWorker pid=1111350)[0m 100%|██████████| 1000/1000 [00:00<00:00, 46239.12it/s]
+[36m(WebshopWorker pid=1111435)[0m 100%|██████████| 1000/1000 [00:00<00:00, 54171.08it/s]
+[36m(WebshopWorker pid=1111354)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 11x across cluster][0m
+[36m(WebshopWorker pid=1111354)[0m   warnings.warn([32m [repeated 11x across cluster][0m
+[36m(WebshopWorker pid=1111354)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 11x across cluster][0m
+[36m(WebshopWorker pid=1111354)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 11x across cluster][0m
+[36m(WebshopWorker pid=1111354)[0m   logger.warn([32m [repeated 11x across cluster][0m
+[36m(WebshopWorker pid=1111466)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 29x across cluster][0m
+[36m(WebshopWorker pid=1111466)[0m   cli: click.BaseCommand,[32m [repeated 29x across cluster][0m
+[36m(WebshopWorker pid=1111370)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 56x across cluster][0m
+[36m(WebshopWorker pid=1111370)[0m   from click.parser import split_arg_string[32m [repeated 56x across cluster][0m
+[36m(WebshopWorker pid=1111503)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 27x across cluster][0m
+[36m(WebshopWorker pid=1111503)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 27x across cluster][0m
+[36m(pid=1111588)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1[32m [repeated 62x across cluster][0m
+[36m(pid=1111588)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.[32m [repeated 62x across cluster][0m
+[36m(pid=1111588)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.[32m [repeated 62x across cluster][0m
+[36m(pid=1111588)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.[32m [repeated 62x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:34:59,545 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.149 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WebshopWorker pid=1111750)[0m 100%|██████████| 1000/1000 [00:00<00:00, 51403.30it/s]
+[36m(WebshopWorker pid=1111455)[0m 100%|██████████| 1000/1000 [00:00<00:00, 49056.76it/s]
+[36m(WebshopWorker pid=1111443)[0m 100%|██████████| 1000/1000 [00:00<00:00, 78064.06it/s]
+[36m(WebshopWorker pid=1111620)[0m 100%|██████████| 1000/1000 [00:00<00:00, 55639.18it/s]
+[36m(WebshopWorker pid=1111527)[0m 100%|██████████| 1000/1000 [00:00<00:00, 56031.63it/s]
+[36m(WebshopWorker pid=1111485)[0m 100%|██████████| 1000/1000 [00:00<00:00, 56059.34it/s]
+[36m(WebshopWorker pid=1111495)[0m 100%|██████████| 1000/1000 [00:00<00:00, 53680.91it/s]
+[36m(WebshopWorker pid=1111611)[0m 100%|██████████| 1000/1000 [00:00<00:00, 98929.26it/s]
+[36m(WebshopWorker pid=1111705)[0m 100%|██████████| 1000/1000 [00:00<00:00, 99466.51it/s]
+[36m(WebshopWorker pid=1111685)[0m 100%|██████████| 1000/1000 [00:00<00:00, 105270.79it/s]
+[36m(WebshopWorker pid=1111588)[0m   0%|          | 0/1000 [00:00<?, ?it/s]100%|██████████| 1000/1000 [00:00<00:00, 42880.84it/s][32m [repeated 62x across cluster][0m
+[36m(WebshopWorker pid=1111667)[0m 100%|██████████| 1000/1000 [00:00<00:00, 109326.31it/s]
+[36m(WebshopWorker pid=1111667)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 53x across cluster][0m
+[36m(WebshopWorker pid=1111667)[0m   warnings.warn([32m [repeated 53x across cluster][0m
+[36m(WebshopWorker pid=1111667)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 53x across cluster][0m
+[36m(WebshopWorker pid=1111667)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 53x across cluster][0m
+[36m(WebshopWorker pid=1111667)[0m   logger.warn([32m [repeated 53x across cluster][0m
+[36m(WebshopWorker pid=1111643)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 35x across cluster][0m
+[36m(WebshopWorker pid=1111643)[0m   cli: click.BaseCommand,[32m [repeated 35x across cluster][0m
+[36m(WebshopWorker pid=1111588)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 72x across cluster][0m
+[36m(WebshopWorker pid=1111588)[0m   from click.parser import split_arg_string[32m [repeated 72x across cluster][0m
+[36m(WebshopWorker pid=1111643)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 37x across cluster][0m
+[36m(WebshopWorker pid=1111643)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 37x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:35:09,555 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1467 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WebshopWorker pid=1111667)[0m   0%|          | 0/1000 [00:00<?, ?it/s]
+[36m(TaskRunner pid=1092686)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[36m(TaskRunner pid=1092686)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[33m(raylet)[0m [2026-04-13 10:35:19,570 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1441 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(TaskRunner pid=1092686)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+[36m(TaskRunner pid=1092686)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+[33m(raylet)[0m [2026-04-13 10:35:29,583 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1415 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:35:39,597 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1396 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:35:49,608 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1372 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:35:59,621 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.135 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:36:09,634 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.133 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:36:19,648 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1304 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:36:29,665 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1275 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:36:39,677 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1256 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:36:49,691 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.123 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:36:59,702 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1214 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:37:09,713 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1194 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:37:19,724 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1172 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:37:29,735 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1143 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:37:39,746 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1124 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:37:49,757 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1087 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(TaskRunner pid=1092686)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 16 examples [00:00, 2844.44 examples/s]
+[36m(TaskRunner pid=1092686)[0m Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=1092686)[0m WARNING:2026-04-13 10:37:53,617:Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=1092686)[0m Filtering prompts longer than 6000 tokens (num_proc=1):   0%|          | 0/16 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=1092686)[0m Filtering prompts longer than 6000 tokens (num_proc=1): 100%|██████████| 16/16 [00:01<00:00, 14.17 examples/s]
+[36m(TaskRunner pid=1092686)[0m Filtering prompts longer than 6000 tokens (num_proc=1): 100%|██████████| 16/16 [00:01<00:00, 12.46 examples/s]
+[36m(TaskRunner pid=1092686)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 64 examples [00:00, 7196.28 examples/s]
+[36m(TaskRunner pid=1092686)[0m Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=1092686)[0m WARNING:2026-04-13 10:37:55,333:Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=1092686)[0m Filtering prompts longer than 6000 tokens (num_proc=1):   0%|          | 0/64 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=1092686)[0m Filtering prompts longer than 6000 tokens (num_proc=1): 100%|██████████| 64/64 [00:01<00:00, 61.69 examples/s]
+[36m(TaskRunner pid=1092686)[0m Filtering prompts longer than 6000 tokens (num_proc=1): 100%|██████████| 64/64 [00:01<00:00, 53.62 examples/s]
+[36m(TaskRunner pid=1092686)[0m DeprecationWarning: `ray.state.available_resources_per_node` is a private attribute and access will be removed in a future Ray version.
+[33m(raylet)[0m [2026-04-13 10:37:57,561 I 1130840 1130840] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1
+[36m(TaskRunner pid=1092686)[0m WARNING:2026-04-13 10:37:57,871:Waiting for register center actor lXphYO_register_center to be ready. Elapsed time: 0 seconds out of 300 seconds.
+[33m(raylet)[0m [2026-04-13 10:37:59,771 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1082 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:38:06,367 I 1131012 1131012] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1[32m [repeated 2x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:38:09,788 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1056 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131101)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[33m(raylet)[0m [2026-04-13 10:38:07,600 I 1131105 1131105] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to -1[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m `torch_dtype` is deprecated! Use `dtype` instead!
+[36m(WorkerDict pid=1131101)[0m Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards:  25%|██▌       | 1/4 [00:02<00:06,  2.08s/it]
+[33m(raylet)[0m [2026-04-13 10:38:19,803 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1031 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1130929)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.[32m [repeated 15x across cluster][0m
+[36m(WorkerDict pid=1131106)[0m `torch_dtype` is deprecated! Use `dtype` instead![32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s][32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards: 100%|██████████| 4/4 [00:06<00:00,  1.36s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:06<00:00,  1.63s/it]
+[36m(WorkerDict pid=1131106)[0m Loading checkpoint shards:  75%|███████▌  | 3/4 [00:06<00:02,  2.13s/it][32m [repeated 23x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:38:29,818 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.1004 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131106)[0m Loading checkpoint shards: 100%|██████████| 4/4 [00:06<00:00,  1.36s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:06<00:00,  1.63s/it][32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:38:39,831 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0986 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:38:49,842 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0964 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:38:59,854 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0941 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:39:09,865 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0924 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:39:19,876 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.09 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131101)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[36m(WorkerDict pid=1131101)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[36m(WorkerDict pid=1131101)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2Model is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[36m(WorkerDict pid=1131101)[0m Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[36m(TaskRunner pid=1092686)[0m range(0, 500)
+[36m(TaskRunner pid=1092686)[0m [SkillsOnlyMemory] Loaded skills: 15 general, 39 task-specific, 12 mistakes  | retrieval_mode=template
+[36m(TaskRunner pid=1092686)[0m [WebshopEnvironmentManager] Skills-only memory enabled (mode=template)
+[36m(TaskRunner pid=1092686)[0m [SkillsOnlyMemory] Loaded skills: 15 general, 39 task-specific, 12 mistakes  | retrieval_mode=template
+[36m(TaskRunner pid=1092686)[0m [WebshopEnvironmentManager] Skills-only memory enabled (mode=template)
+[36m(WebshopWorker pid=1111611)[0m Loaded 6910 goals.[32m [repeated 53x across cluster][0m
+[36m(WebshopWorker pid=1111643)[0m Products loaded.[32m [repeated 62x across cluster][0m
+[36m(WebshopWorker pid=1111643)[0m Keys cleaned.[32m [repeated 62x across cluster][0m
+[36m(WebshopWorker pid=1111588)[0m Attributes loaded.[32m [repeated 62x across cluster][0m
+[36m(TaskRunner pid=1092686)[0m Using dataset class: RLHFDataset
+[36m(WebshopWorker pid=1111667)[0m Loaded 6910 goals.[32m [repeated 11x across cluster][0m
+[36m(WebshopWorker pid=1111667)[0m Products loaded.
+[36m(WebshopWorker pid=1111667)[0m Keys cleaned.
+[36m(WebshopWorker pid=1111667)[0m Attributes loaded.
+[36m(TaskRunner pid=1092686)[0m dataset len: 16
+[36m(TaskRunner pid=1092686)[0m filter dataset len: 16
+[36m(TaskRunner pid=1092686)[0m Using dataset class: RLHFDataset
+[36m(TaskRunner pid=1092686)[0m dataset len: 64
+[36m(TaskRunner pid=1092686)[0m filter dataset len: 64
+[36m(TaskRunner pid=1092686)[0m WARNING: val_batch_size is deprecated. Validation datasets are sent to inference engines as a whole batch, which will schedule the memory themselves.
+[36m(TaskRunner pid=1092686)[0m [validate_config] All configuration checks passed successfully!
+[33m(raylet)[0m WARNING: 528 PYTHON worker processes have been started on node: cf9561ea9b351292c17bf1f0625f06849201f38b35fd37efd1095773 with address: 172.22.224.28. This could be a result of using a large number of actors, or due to tasks blocked in ray.get() calls (see https://github.com/ray-project/ray/issues/3644 for some discussion of workarounds).
+[36m(TaskRunner pid=1092686)[0m Size of train dataloader: 1, Size of val dataloader: 1
+[36m(TaskRunner pid=1092686)[0m Total training steps: 1
+[36m(TaskRunner pid=1092686)[0m colocated worker base class <class 'verl.single_controller.base.worker.Worker'>
+[36m(WorkerDict pid=1130929)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=1130929)[0m   "_attn_implementation_autoset": true,
+[36m(WorkerDict pid=1130929)[0m   "architectures": [
+[36m(WorkerDict pid=1130929)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=1130929)[0m   ],
+[36m(WorkerDict pid=1130929)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=1130929)[0m   "dtype": "bfloat16",
+[36m(WorkerDict pid=1130929)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=1130929)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=1130929)[0m   "hidden_size": 3584,
+[36m(WorkerDict pid=1130929)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=1130929)[0m   "intermediate_size": 18944,
+[36m(WorkerDict pid=1130929)[0m   "layer_types": [
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention"
+[36m(WorkerDict pid=1130929)[0m   ],
+[36m(WorkerDict pid=1130929)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=1130929)[0m   "max_window_layers": 28,
+[36m(WorkerDict pid=1130929)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=1130929)[0m   "num_attention_heads": 28,
+[36m(WorkerDict pid=1130929)[0m   "num_hidden_layers": 28,
+[36m(WorkerDict pid=1130929)[0m   "num_key_value_heads": 4,
+[36m(WorkerDict pid=1130929)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=1130929)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=1130929)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=1130929)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=1130929)[0m   "sliding_window": null,
+[36m(WorkerDict pid=1130929)[0m   "tie_word_embeddings": false,
+[36m(WorkerDict pid=1130929)[0m   "transformers_version": "4.57.3",
+[36m(WorkerDict pid=1130929)[0m   "use_cache": true,
+[36m(WorkerDict pid=1130929)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=1130929)[0m   "vocab_size": 152064
+[36m(WorkerDict pid=1130929)[0m }
+[36m(WorkerDict pid=1130929)[0m 
+[36m(WorkerDict pid=1130929)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=1130929)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=1130929)[0m Qwen2ForCausalLM contains 7.62B parameters
+[36m(WorkerDict pid=1130929)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f91fe4ce7a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f91fe4ce680>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])
+[36m(WorkerDict pid=1130929)[0m NCCL version 2.21.5+cuda12.4
+[36m(WorkerDict pid=1130929)[0m Actor use_remove_padding=True
+[36m(WorkerDict pid=1130929)[0m Actor use_fused_kernels=False
+[36m(WorkerDict pid=1131105)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131105)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131105)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f49144ca7a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f49144ca680>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=1130929)[0m   "_attn_implementation_autoset": true,
+[36m(WorkerDict pid=1130929)[0m   "architectures": [
+[36m(WorkerDict pid=1130929)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=1130929)[0m   ],
+[36m(WorkerDict pid=1130929)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=1130929)[0m   "dtype": "bfloat16",
+[36m(WorkerDict pid=1130929)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=1130929)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=1130929)[0m   "hidden_size": 3584,
+[36m(WorkerDict pid=1130929)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=1130929)[0m   "intermediate_size": 18944,
+[36m(WorkerDict pid=1130929)[0m   "layer_types": [
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[33m(raylet)[0m [2026-04-13 10:39:29,889 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0872 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131106)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.[32m [repeated 15x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2Model is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`[32m [repeated 14x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s][32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:39:39,900 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0853 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards:  25%|██▌       | 1/4 [00:19<00:57, 19.17s/it]
+[33m(raylet)[0m [2026-04-13 10:39:49,911 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0827 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131105)[0m Loading checkpoint shards:  25%|██▌       | 1/4 [00:20<01:01, 20.47s/it][32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:39:59,924 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0811 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards:  50%|█████     | 2/4 [00:38<00:38, 19.44s/it]
+[36m(WorkerDict pid=1131101)[0m Loading checkpoint shards:  50%|█████     | 2/4 [00:39<00:39, 19.74s/it]
+[33m(raylet)[0m [2026-04-13 10:40:09,935 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.079 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131106)[0m Loading checkpoint shards:  50%|█████     | 2/4 [00:39<00:39, 19.73s/it][32m [repeated 6x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:40:19,945 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0766 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131101)[0m Loading checkpoint shards:  75%|███████▌  | 3/4 [00:59<00:19, 19.77s/it]
+[36m(WorkerDict pid=1130929)[0m Loading checkpoint shards:  75%|███████▌  | 3/4 [01:00<00:20, 20.48s/it]
+[36m(WorkerDict pid=1131101)[0m Loading checkpoint shards: 100%|██████████| 4/4 [01:02<00:00, 12.95s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:02<00:00, 15.51s/it]
+[33m(raylet)[0m [2026-04-13 10:40:29,958 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0739 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131106)[0m Loading checkpoint shards:  75%|███████▌  | 3/4 [01:00<00:20, 20.27s/it][32m [repeated 6x across cluster][0m
+[36m(WorkerDict pid=1131104)[0m Loading checkpoint shards: 100%|██████████| 4/4 [01:03<00:00, 13.27s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:03<00:00, 15.79s/it][32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:40:39,969 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0719 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:40:49,981 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0697 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1130929)[0m `torch_dtype` is deprecated! Use `dtype` instead!
+[33m(raylet)[0m [2026-04-13 10:40:59,992 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0679 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1130929)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[36m(WorkerDict pid=1131100)[0m `torch_dtype` is deprecated! Use `dtype` instead![32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:41:10,004 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0657 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131100)[0m The tokenizer you are loading from '/data/qzheng19/Webshop-7B-RL/hf' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.[32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:41:20,015 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0635 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:41:30,027 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0453 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:41:40,039 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0297 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:41:50,049 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0274 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:42:00,059 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0157 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:42:10,069 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0136 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:42:20,080 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0112 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:42:30,091 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0086 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:42:40,104 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0066 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131106)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:690: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=1131106)[0m   warnings.warn(
+[36m(TaskRunner pid=1092686)[0m wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/qzheng19/.netrc.
+[36m(TaskRunner pid=1092686)[0m wandb: Currently logged in as: qzheng19 (qzheng19-uiuc) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+[36m(TaskRunner pid=1092686)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/wandb/analytics/sentry.py:268: DeprecationWarning: Read the `app_url` setting from the appropriate Settings object.
+[36m(TaskRunner pid=1092686)[0m   app_url = wandb.util.app_url(tags["base_url"])  # type: ignore[index]
+[36m(TaskRunner pid=1092686)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/wandb/analytics/sentry.py:279: DeprecationWarning: The `Scope.user` setter is deprecated in favor of `Scope.set_user()`.
+[36m(TaskRunner pid=1092686)[0m   self.scope.user = {"email": email}
+[36m(TaskRunner pid=1092686)[0m wandb: setting up run 5m1t345e
+[36m(TaskRunner pid=1092686)[0m wandb: Tracking run with wandb version 0.25.1
+[36m(TaskRunner pid=1092686)[0m wandb: Run data is saved locally in /home/qzheng19/SkillRL/wandb/run-20260413_104246-5m1t345e
+[36m(TaskRunner pid=1092686)[0m wandb: Run `wandb offline` to turn off syncing.
+[36m(TaskRunner pid=1092686)[0m wandb: Syncing run eval-webshop-skillrl-7b
+[36m(TaskRunner pid=1092686)[0m wandb: ⭐️ View project at https://wandb.ai/qzheng19-uiuc/opsd-repro
+[36m(TaskRunner pid=1092686)[0m wandb: 🚀 View run at https://wandb.ai/qzheng19-uiuc/opsd-repro/runs/5m1t345e
+[36m(TaskRunner pid=1092686)[0m wandb: Detected [openai] in use.
+[36m(TaskRunner pid=1092686)[0m wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[36m(TaskRunner pid=1092686)[0m wandb: For more information, check out the docs at: https://weave-docs.wandb.ai/
+[33m(raylet)[0m [2026-04-13 10:42:50,116 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0034 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1131102)[0m /home/qzheng19/.conda/envs/baseline_skillrl/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:690: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131102)[0m   warnings.warn([32m [repeated 7x across cluster][0m
+[33m(raylet)[0m [2026-04-13 10:43:00,128 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 47.0008 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:43:10,139 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9988 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:43:20,151 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9955 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:43:30,162 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9919 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:43:40,173 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9919 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:43:50,184 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9887 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:44:00,195 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9861 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:44:10,206 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9837 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:44:20,217 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9808 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:44:30,228 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9781 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:44:40,239 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9751 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:44:50,250 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9718 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:45:00,261 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9702 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:45:10,273 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9675 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:45:20,284 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9649 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:45:30,293 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9613 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:45:40,303 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9587 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:45:50,314 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9566 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:46:00,325 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9539 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:46:10,336 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9522 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:46:20,347 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9499 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:46:30,358 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9466 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[33m(raylet)[0m [2026-04-13 10:46:40,369 E 1086845 1086877] (raylet) file_system_monitor.cc:116: /tmp/ray_qzheng19/ray/session_2026-04-13_10-34-06_599327_1085863 is over 95% full, available space: 46.9447 GB; capacity: 1820.84 GB. Object creation will fail if spilling is required.
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention",
+[36m(WorkerDict pid=1130929)[0m     "full_attention"
+[36m(WorkerDict pid=1130929)[0m   ],
+[36m(WorkerDict pid=1130929)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=1130929)[0m   "max_window_layers": 28,
+[36m(WorkerDict pid=1130929)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=1130929)[0m   "num_attention_heads": 28,
+[36m(WorkerDict pid=1130929)[0m   "num_hidden_layers": 28,
+[36m(WorkerDict pid=1130929)[0m   "num_key_value_heads": 4,
+[36m(WorkerDict pid=1130929)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=1130929)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=1130929)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=1130929)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=1130929)[0m   "sliding_window": null,
+[36m(WorkerDict pid=1130929)[0m   "tie_word_embeddings": false,
+[36m(WorkerDict pid=1130929)[0m   "transformers_version": "4.57.3",
+[36m(WorkerDict pid=1130929)[0m   "use_cache": true,
+[36m(WorkerDict pid=1130929)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=1130929)[0m   "vocab_size": 152064
+[36m(WorkerDict pid=1130929)[0m }
+[36m(WorkerDict pid=1130929)[0m 
+[36m(WorkerDict pid=1131105)[0m Actor use_remove_padding=True[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131105)[0m Actor use_fused_kernels=False[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131101)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=1131101)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=1131103)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=1131103)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=1130929)[0m Qwen2ForCausalLM contains 7.62B parameters
+[36m(WorkerDict pid=1130929)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f91fe4ce7a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f91fe4ce680>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])
+[36m(WorkerDict pid=1131103)[0m Total steps: 1, num_warmup_steps: 0
+[36m(WorkerDict pid=1131100)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention[32m [repeated 6x across cluster][0m
+[36m(WorkerDict pid=1131100)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None[32m [repeated 6x across cluster][0m
+[36m(WorkerDict pid=1131105)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f49144ca7a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f49144ca680>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131104)[0m Actor use_remove_padding=True
+[36m(WorkerDict pid=1131104)[0m Actor use_fused_kernels=False
+[36m(WorkerDict pid=1130929)[0m Total steps: 1, num_warmup_steps: 0[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m WARNING 04-13 10:41:10 [utils.py:2522] Methods determine_num_available_blocks,device_config,get_cache_block_size_bytes,initialize_cache not implemented in <vllm.v1.worker.gpu_worker.Worker object at 0x7f90387e4eb0>
+[36m(WorkerDict pid=1130929)[0m Actor use_remove_padding=True[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1130929)[0m Actor use_fused_kernels=False[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131103)[0m NCCL version 2.21.5+cuda12.4
+[36m(WorkerDict pid=1130929)[0m WARNING 04-13 10:41:12 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[36m(WorkerDict pid=1131106)[0m kwargs: {'n': 1, 'logprobs': 0, 'max_tokens': 768, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'ignore_eos': False}
+[36m(WorkerDict pid=1131100)[0m WARNING 04-13 10:41:11 [utils.py:2522] Methods determine_num_available_blocks,device_config,get_cache_block_size_bytes,initialize_cache not implemented in <vllm.v1.worker.gpu_worker.Worker object at 0x7f3752105630>[32m [repeated 7x across cluster][0m
+[36m(WorkerDict pid=1131105)[0m WARNING 04-13 10:41:12 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.[32m [repeated 7x across cluster][0m
+[36m(TaskRunner pid=1092686)[0m Using LocalLogger is deprecated. The constructor API will change 
+[36m(TaskRunner pid=1092686)[0m Checkpoint tracker file does not exist: %s /home/qzheng19/ms-swift/examples/train/rlhf/skill_opsd/eval/logs/webshop_skillrl_results/latest_checkpointed_iteration.txt
+[36m(TaskRunner pid=1092686)[0m Training from scratch
+[36m(TaskRunner pid=1092686)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=1092686)[0m validation generation end
+[36m(WorkerDict pid=1131102)[0m kwargs: {'n': 1, 'logprobs': 0, 'max_tokens': 768, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'ignore_eos': False}[32m [repeated 7x across cluster][0m
+[36m(TaskRunner pid=1092686)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=1092686)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=1092686)[0m <|im_start|>user
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m You are an expert autonomous agent operating in the WebShop e‑commerce environment.
+[36m(TaskRunner pid=1092686)[0m Your task is to: Find me wash cold, machine wash men's shirts with polyester heathers, heathers cotton, cotton heather, needle sleeve, classic fit with color: olive, and fit type: women, and size: medium, and price lower than 50.00 dollars.
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m ## Retrieved Relevant Experience
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m ### General Principles
+[36m(TaskRunner pid=1092686)[0m - **Prioritize Core Keywords**: Include the product type, 1-2 key functional attributes, and any hard constraints (price, size, color) in the search query; omit secondary descriptors to avoid over-constraining.
+[36m(TaskRunner pid=1092686)[0m - **Iterative Query Refinement**: If top results are irrelevant, adjust keywords (add/remove terms or use synonyms) or apply site filters instead of repeating the same query.
+[36m(TaskRunner pid=1092686)[0m - **Scan Before You Click**: Read product titles, thumbnails, and prices in the results list to ensure the item plausibly meets core constraints before opening it.
+[36m(TaskRunner pid=1092686)[0m - **Verify Early, Abort Fast**: On the product page, immediately check category, core attributes, and price; if a key constraint is violated, leave the page at once.
+[36m(TaskRunner pid=1092686)[0m - **Set Mandatory Variants**: Always select required variant options (size, color, capacity, etc.) before evaluating price or purchasing.
+[36m(TaskRunner pid=1092686)[0m - **Confirm Hidden Attributes**: Open the Description/Features section to ensure non-visible specs (e.g., material, wash method, slip resistance) meet constraints; skip item if unconfirmed.
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m ### Apparel Skills
+[36m(TaskRunner pid=1092686)[0m - **Focus Key Query**: Include only product type + must-have attributes (gender, garment, fabric, sleeve/fit, price cap) in the search; drop minor or redundant terms to widen relevant results.
+[36m(TaskRunner pid=1092686)[0m   _Apply when: Before issuing or refining any search query._
+[36m(TaskRunner pid=1092686)[0m - **Validate Core Match**: On every product page, confirm the title/category matches the requested garment type and primary attributes; if not, immediately return to results.
+[36m(TaskRunner pid=1092686)[0m   _Apply when: Right after opening a product detail page._
+[36m(TaskRunner pid=1092686)[0m - **Set Variants First**: Always select the required size and color options before evaluating price or purchasing to ensure the exact variant meets constraints.
+[36m(TaskRunner pid=1092686)[0m   _Apply when: Upon landing on a relevant product page with selectable options._
+[36m(TaskRunner pid=1092686)[0m - **Check Variant Price**: After choosing size/color, verify the displayed price for that specific variant is within budget; abandon if it exceeds the limit.
+[36m(TaskRunner pid=1092686)[0m   _Apply when: Immediately after variant selection and before clicking buy._
+[36m(TaskRunner pid=1092686)[0m - **Confirm Hidden Specs**: Scroll to bullet points/description to verify non-title attributes (material, care, fit, design features); reject items lacking evidence.
+[36m(TaskRunner pid=1092686)[0m   _Apply when: Before purchase on a candidate product where attributes aren’t obvious in the title._
+[36m(TaskRunner pid=1092686)[0m - **Adaptive Search Loop**: If top results are irrelevant, alter search by removing rare constraints or scanning more pages instead of repeating identical queries or cycling one bad product.
+[36m(TaskRunner pid=1092686)[0m   _Apply when: After an initial search yields no suitable items or only mismatches._
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m ### Mistakes to Avoid
+[36m(TaskRunner pid=1092686)[0m - **Don't**: Submitting a search query that omits key constraints (e.g., size or price cap), leading to an overwhelming or irrelevant result set.
+[36m(TaskRunner pid=1092686)[0m   **Instead**: Always assemble the full requirement list first, then build the query so every mandatory constraint (category, attributes, price) is explicitly included.
+[36m(TaskRunner pid=1092686)[0m - **Don't**: Using overly specific or uncommon color/variant names in the initial search, returning zero or few results.
+[36m(TaskRunner pid=1092686)[0m   **Instead**: Start with broader color families (e.g., "red" instead of "dusty blush") and narrow down with on-page filters once results appear.
+[36m(TaskRunner pid=1092686)[0m - **Don't**: Selecting a visually similar but wrong product category (e.g., picking dress pants instead of dress shirts).
+[36m(TaskRunner pid=1092686)[0m   **Instead**: Cross-check product titles and breadcrumb/category labels against the requested category before clicking or purchasing.
+[36m(TaskRunner pid=1092686)[0m - **Don't**: Failing to notice that the displayed price changes after selecting the required size or color, causing budget overruns.
+[36m(TaskRunner pid=1092686)[0m   **Instead**: After every option change (size, color, etc.) re-read the price element and abort if it exceeds the budget.
+[36m(TaskRunner pid=1092686)[0m - **Don't**: Adding an item to cart without first setting mandatory variant options, triggering errors or adding an unintended default variant.
+[36m(TaskRunner pid=1092686)[0m   **Instead**: Before purchasing, validate that every required dropdown/radio option (size, color, length, pack count) has been explicitly selected.
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m ## Current Progress
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m Prior to this step, you have already taken 4 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 3: ''Back to Search' [SEP] '< Prev' [SEP] 'fit type' [SEP] 'men' [SEP] 'women' [SEP] 'youth' [SEP] 'color' [SEP] 'black' [SEP] 'navy' [SEP] 'asphalt' [SEP] 'cranberry' [SEP] 'kelly green' [SEP] 'brown' [SEP] 'olive' [SEP] 'dark heather' [SEP] 'purple' [SEP] 'royal blue' [SEP] 'size' [SEP] 'small' [SEP] 'medium' [SEP] 'large' [SEP] 'x-large' [SEP] 'xx-large' [SEP] '3x-large' [SEP] '2t' [SEP] '3t' [SEP] '4t' [SEP] 'x-small' [SEP] 'I Tackled 100 Day Of School Football Boy 100th Day School T-Shirt' [SEP] 'Price: $16.99' [SEP] 'Rating: N.A.' [SEP] 'Description' [SEP] 'Features' [SEP] 'Reviews' [SEP] 'Buy Now'', Action 3: 'click[women]']
+[36m(TaskRunner pid=1092686)[0m [Observation 4: ''Back to Search' [SEP] '< Prev' [SEP] 'fit type' [SEP] 'men' [SEP] 'women' [SEP] 'youth' [SEP] 'color' [SEP] 'black' [SEP] 'navy' [SEP] 'asphalt' [SEP] 'cranberry' [SEP] 'kelly green' [SEP] 'brown' [SEP] 'olive' [SEP] 'dark heather' [SEP] 'purple' [SEP] 'royal blue' [SEP] 'size' [SEP] 'small' [SEP] 'medium' [SEP] 'large' [SEP] 'x-large' [SEP] 'xx-large' [SEP] '3x-large' [SEP] '2t' [SEP] '3t' [SEP] '4t' [SEP] 'x-small' [SEP] 'I Tackled 100 Day Of School Football Boy 100th Day School T-Shirt' [SEP] 'Price: $16.99' [SEP] 'Rating: N.A.' [SEP] 'Description' [SEP] 'Features' [SEP] 'Reviews' [SEP] 'Buy Now'', Action 4: 'click[olive]']
+[36m(TaskRunner pid=1092686)[0m You are now at step 5 and your current observation is: 'Back to Search' [SEP] '< Prev' [SEP] 'fit type' [SEP] 'men' [SEP] 'women' [SEP] 'youth' [SEP] 'color' [SEP] 'black' [SEP] 'navy' [SEP] 'asphalt' [SEP] 'cranberry' [SEP] 'kelly green' [SEP] 'brown' [SEP] 'olive' [SEP] 'dark heather' [SEP] 'purple' [SEP] 'royal blue' [SEP] 'size' [SEP] 'small' [SEP] 'medium' [SEP] 'large' [SEP] 'x-large' [SEP] 'xx-large' [SEP] '3x-large' [SEP] '2t' [SEP] '3t' [SEP] '4t' [SEP] 'x-small' [SEP] 'I Tackled 100 Day Of School Football Boy 100th Day School T-Shirt' [SEP] 'Price: $16.99' [SEP] 'Rating: N.A.' [SEP] 'Description' [SEP] 'Features' [SEP] 'Reviews' [SEP] 'Buy Now'.
+[36m(TaskRunner pid=1092686)[0m Your admissible actions of the current situation are:
+[36m(TaskRunner pid=1092686)[0m [
+[36m(TaskRunner pid=1092686)[0m 'click[back to search]',
+[36m(TaskRunner pid=1092686)[0m 'click[< prev]',
+[36m(TaskRunner pid=1092686)[0m 'click[description]',
+[36m(TaskRunner pid=1092686)[0m 'click[features]',
+[36m(TaskRunner pid=1092686)[0m 'click[reviews]',
+[36m(TaskRunner pid=1092686)[0m 'click[buy now]',
+[36m(TaskRunner pid=1092686)[0m 'click[men]',
+[36m(TaskRunner pid=1092686)[0m 'click[women]',
+[36m(TaskRunner pid=1092686)[0m 'click[youth]',
+[36m(TaskRunner pid=1092686)[0m 'click[black]',
+[36m(TaskRunner pid=1092686)[0m 'click[navy]',
+[36m(TaskRunner pid=1092686)[0m 'click[asphalt]',
+[36m(TaskRunner pid=1092686)[0m 'click[cranberry]',
+[36m(TaskRunner pid=1092686)[0m 'click[kelly green]',
+[36m(TaskRunner pid=1092686)[0m 'click[brown]',
+[36m(TaskRunner pid=1092686)[0m 'click[olive]',
+[36m(TaskRunner pid=1092686)[0m 'click[dark heather]',
+[36m(TaskRunner pid=1092686)[0m wandb: updating run metadata
+[36m(TaskRunner pid=1092686)[0m wandb: uploading history steps 0-0, summary, console lines 7-101
+[36m(TaskRunner pid=1092686)[0m wandb: 
+[36m(TaskRunner pid=1092686)[0m wandb: Run history:
+[36m(TaskRunner pid=1092686)[0m wandb:                          val/success_rate ▁
+[36m(TaskRunner pid=1092686)[0m wandb:                       val/text/test_score ▁
+[36m(TaskRunner pid=1092686)[0m wandb:             val/text/tool_call_count/mean ▁
+[36m(TaskRunner pid=1092686)[0m wandb: val/webshop_task_score (not success_rate) ▁
+[36m(TaskRunner pid=1092686)[0m wandb: 
+[36m(TaskRunner pid=1092686)[0m wandb: Run summary:
+[36m(TaskRunner pid=1092686)[0m wandb:                          val/success_rate 0.78125
+[36m(TaskRunner pid=1092686)[0m wandb:                       val/text/test_score 6.97337
+[36m(TaskRunner pid=1092686)[0m wandb:             val/text/tool_call_count/mean 0
+[36m(TaskRunner pid=1092686)[0m wandb: val/webshop_task_score (not success_rate) 0.87878
+[36m(TaskRunner pid=1092686)[0m wandb: 
+[36m(TaskRunner pid=1092686)[0m wandb: 🚀 View run eval-webshop-skillrl-7b at: https://wandb.ai/qzheng19-uiuc/opsd-repro/runs/5m1t345e
+[36m(TaskRunner pid=1092686)[0m wandb: ⭐️ View project at: https://wandb.ai/qzheng19-uiuc/opsd-repro
+[36m(TaskRunner pid=1092686)[0m wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+[36m(TaskRunner pid=1092686)[0m wandb: Find logs at: ./wandb/run-20260413_104246-5m1t345e/logs
+[36m(TaskRunner pid=1092686)[0m 'click[purple]',
+[36m(TaskRunner pid=1092686)[0m 'click[royal blue]',
+[36m(TaskRunner pid=1092686)[0m 'click[small]',
+[36m(TaskRunner pid=1092686)[0m 'click[medium]',
+[36m(TaskRunner pid=1092686)[0m 'click[large]',
+[36m(TaskRunner pid=1092686)[0m 'click[x-large]',
+[36m(TaskRunner pid=1092686)[0m 'click[xx-large]',
+[36m(TaskRunner pid=1092686)[0m 'click[3x-large]',
+[36m(TaskRunner pid=1092686)[0m 'click[2t]',
+[36m(TaskRunner pid=1092686)[0m 'click[3t]',
+[36m(TaskRunner pid=1092686)[0m 'click[4t]',
+[36m(TaskRunner pid=1092686)[0m 'click[x-small]',
+[36m(TaskRunner pid=1092686)[0m ].
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m Now it's your turn to take one action for the current step.
+[36m(TaskRunner pid=1092686)[0m You should first reason step-by-step about the current situation, then think carefully which admissible action best advances the shopping goal. This reasoning process MUST be enclosed within <think> </think> tags.
+[36m(TaskRunner pid=1092686)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=1092686)[0m <|im_end|>
+[36m(TaskRunner pid=1092686)[0m <|im_start|>assistant
+[36m(TaskRunner pid=1092686)[0m 
+[36m(TaskRunner pid=1092686)[0m [text][response] <think>Color already set to Olive. Now choose size.</think>
+[36m(TaskRunner pid=1092686)[0m <action>click[medium]</action><|im_end|>
+[36m(TaskRunner pid=1092686)[0m [text][score] 10.0
+[36m(TaskRunner pid=1092686)[0m ("Initial validation metrics: {'val/text/test_score': 6.973365617433414, "
+[36m(TaskRunner pid=1092686)[0m  "'val/text/tool_call_count/mean': 0.0, 'val/success_rate': 0.78125, "
+[36m(TaskRunner pid=1092686)[0m  "'val/webshop_task_score (not success_rate)': 0.8787794237012987}")
+[36m(TaskRunner pid=1092686)[0m step:0 - val/text/test_score:6.973 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.781 - val/webshop_task_score (not success_rate):0.879

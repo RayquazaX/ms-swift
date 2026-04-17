@@ -13,7 +13,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
 from packaging import version
-from transformers import PreTrainedModel
+from transformers import PreTrainedModel, TrainerCallback
 from trl import SFTTrainer as HFSFTTrainer
 from typing import Dict, Optional, Union
 
@@ -46,6 +46,210 @@ if is_swanlab_available():
     import swanlab
 
 
+def _align_vocab_size(student_logits, teacher_logits):
+    """Align vocab dimensions between student and teacher by padding the smaller one."""
+    stu_vocab = student_logits.shape[-1]
+    tea_vocab = teacher_logits.shape[-1]
+    if stu_vocab == tea_vocab:
+        return student_logits, teacher_logits
+    if stu_vocab < tea_vocab:
+        student_logits = F.pad(student_logits, (0, tea_vocab - stu_vocab), 'constant', 0)
+        student_logits[..., stu_vocab:] = teacher_logits[..., stu_vocab:]
+    else:
+        teacher_logits = F.pad(teacher_logits, (0, stu_vocab - tea_vocab), 'constant', 0)
+        teacher_logits[..., tea_vocab:] = student_logits[..., tea_vocab:]
+    return student_logits, teacher_logits
+
+
+@torch.no_grad()
+def compute_icsd_monitoring_metrics(
+    student_logits,
+    labels,
+    top_k=20,
+    window_size=32,
+    action_token_ids=(27, 1311, 29),
+):
+    """Compute 3 monitoring metrics on student-generated response tokens.
+    Returns dict: {entropy_mean, thinking_length_mean, deepconf_bottom10_mean, deepconf_tail_mean}.
+    Expects student_logits [B, T, V], labels [B, T] with -100 on non-response positions.
+    """
+    B, T, V = student_logits.shape
+    shifted_logits = student_logits[:, :-1, :].contiguous()
+    shifted_labels = labels[:, 1:].contiguous()
+    resp_mask = shifted_labels != -100
+
+    if resp_mask.sum() == 0:
+        return {}
+
+    logprobs = F.log_softmax(shifted_logits.float(), dim=-1)
+
+    probs = logprobs.exp()
+    token_entropy = -(probs * logprobs).sum(dim=-1)
+    entropy_mean = token_entropy[resp_mask].mean().item()
+
+    topk_logprobs, _ = logprobs.topk(top_k, dim=-1)
+    token_conf = -topk_logprobs.mean(dim=-1)
+
+    thinking_lens, bottom10, tails = [], [], []
+    at = torch.tensor(list(action_token_ids), device=shifted_labels.device)
+    al = len(action_token_ids)
+
+    for b in range(B):
+        mask_b = resp_mask[b]
+        if not mask_b.any():
+            continue
+        positions = mask_b.nonzero(as_tuple=False).squeeze(-1)
+        resp_labels = shifted_labels[b][positions]
+        L = positions.numel()
+
+        act_pos = L
+        if L >= al:
+            for i in range(L - al + 1):
+                if torch.equal(resp_labels[i:i + al], at):
+                    act_pos = i
+                    break
+        thinking_lens.append(act_pos)
+
+        conf_b = token_conf[b][positions]
+        W = min(window_size, L)
+        if W <= 0:
+            continue
+        n_win = L - W + 1
+        if n_win >= 1:
+            conf_b_unfold = conf_b.unfold(0, W, 1)
+            win_means = conf_b_unfold.mean(dim=-1)
+            k_bot = max(1, int(0.1 * n_win))
+            bot_val = win_means.sort().values[:k_bot].mean().item()
+            tail_val = win_means[-1].item()
+            bottom10.append(bot_val)
+            tails.append(tail_val)
+
+    out = {
+        'train/student_token_entropy_mean': entropy_mean,
+        'train/thinking_length_tokens_mean': (sum(thinking_lens) / len(thinking_lens)) if thinking_lens else 0.0,
+    }
+    if bottom10:
+        out['train/deepconf_bottom10_mean'] = sum(bottom10) / len(bottom10)
+        out['train/deepconf_tail_mean'] = sum(tails) / len(tails)
+    return out
+
+
+def generalized_jsd_loss(
+    student_logits,
+    teacher_logits=None,
+    labels=None,
+    beta=0.5,
+    temperature=1.0,
+    chunk_size=512,
+    topk=None,
+    teacher_topk_logprobs=None,
+    teacher_topk_indices=None,
+    reduction='batchmean',
+    token_clip=None,
+):
+    """Compute generalized Jensen-Shannon Divergence loss for knowledge distillation.
+
+    Module-level function so it can be imported and reused by other components
+    (e.g., KL-based skill filtering).
+
+    Args:
+        student_logits: Tensor of student logits.
+        teacher_logits: Tensor of teacher logits (optional when top-k mode).
+        labels: Optional labels with -100 for positions to ignore.
+        beta: Interpolation coefficient between 0 and 1 (default: 0.5).
+        temperature: Softmax temperature.
+        chunk_size: Chunk size for memory-efficient computation.
+        topk: If set, restricts loss to top-k tokens of teacher distribution.
+        teacher_topk_logprobs: Precomputed teacher top-k logprobs (API mode).
+        teacher_topk_indices: Precomputed teacher top-k indices (API mode).
+        reduction: Reduction mode. Kept for API compatibility (current impl
+            always returns per-valid-token mean, matching original behavior).
+        token_clip: If set (>0), clips per-token divergence values to this
+            maximum before reduction. Prevents style tokens from dominating
+            the gradient signal. ``None`` or ``0`` disables clipping.
+
+    Returns:
+        Scalar tensor with the generalized JSD loss.
+    """
+    # Align vocab sizes when student and teacher have different vocabulary dimensions
+    if teacher_logits is not None:
+        student_logits, teacher_logits = _align_vocab_size(student_logits, teacher_logits)
+
+    # Top-k mode: gather/topk first to get small [*, k] tensors, then scale in-place
+    if teacher_topk_logprobs is not None and teacher_topk_indices is not None:
+        student_logits = torch.gather(student_logits, dim=-1, index=teacher_topk_indices)
+        student_logits.div_(temperature)
+        teacher_logits = teacher_topk_logprobs / temperature
+        temperature = 1.0
+    elif topk is not None and teacher_logits is not None:
+        teacher_logits, topk_idx = torch.topk(teacher_logits, k=topk, dim=-1)
+        teacher_logits.div_(temperature)
+        student_logits = torch.gather(student_logits, dim=-1, index=topk_idx)
+        student_logits.div_(temperature)
+        temperature = 1.0
+
+    if labels is not None:
+        mask = labels != -100
+        student_logits = student_logits[mask]
+        teacher_logits = teacher_logits[mask]
+        num_valid = mask.sum()
+    else:
+        student_logits = student_logits.view(-1, student_logits.size(-1))
+        teacher_logits = teacher_logits.view(-1, teacher_logits.size(-1))
+        num_valid = student_logits.size(0)
+    student_logits.div_(temperature)
+    teacher_logits.div_(temperature)
+
+    if num_valid == 0:
+        return student_logits.new_zeros(())
+
+    num_valid_int = num_valid if isinstance(num_valid, int) else num_valid.item()
+    total_loss = student_logits.new_zeros(())
+
+    if beta != 0 and beta != 1:
+        beta_t = torch.tensor(beta, dtype=student_logits.dtype, device=student_logits.device)
+        log_beta = torch.log(beta_t)
+        log_1_minus_beta = torch.log1p(-beta_t)
+    else:
+        beta_t = log_beta = log_1_minus_beta = None
+
+    clip_active = token_clip is not None and token_clip > 0
+
+    for start_idx in range(0, num_valid_int, chunk_size):
+        end_idx = min(start_idx + chunk_size, num_valid_int)
+        s_chunk = student_logits[start_idx:end_idx]
+        t_chunk = teacher_logits[start_idx:end_idx]
+
+        s_log_probs = F.log_softmax(s_chunk, dim=-1)
+        t_log_probs = F.log_softmax(t_chunk, dim=-1)
+        del s_chunk, t_chunk
+
+        if beta == 0:
+            jsd_chunk = F.kl_div(s_log_probs, t_log_probs, reduction='none', log_target=True)
+        elif beta == 1:
+            jsd_chunk = F.kl_div(t_log_probs, s_log_probs, reduction='none', log_target=True)
+        else:
+            mixture_log_probs = torch.logsumexp(
+                torch.stack([s_log_probs + log_1_minus_beta, t_log_probs + log_beta]),
+                dim=0,
+            )
+            kl_teacher = F.kl_div(mixture_log_probs, t_log_probs, reduction='none', log_target=True)
+            kl_student = F.kl_div(mixture_log_probs, s_log_probs, reduction='none', log_target=True)
+            del mixture_log_probs
+            jsd_chunk = beta_t * kl_teacher + (1 - beta_t) * kl_student
+            del kl_teacher, kl_student
+
+        # Per-element clipping: cap each (position, vocab) divergence value before reduction.
+        # Mirrors OPSD's `jsd.clamp(max=token_clip)` prior to the sum — element-wise on
+        # the KL-per-element tensor, to keep style tokens from dominating the gradient signal.
+        if clip_active:
+            jsd_chunk = jsd_chunk.clamp(max=token_clip)
+        total_loss = total_loss + jsd_chunk.sum()
+        del jsd_chunk, s_log_probs, t_log_probs
+
+    return total_loss / num_valid
+
+
 class DataSource(str, Enum):
     STUDENT = 'student'  # On-policy: student model generates responses
     TEACHER = 'teacher'  # Sequential KD: teacher model generates responses
@@ -75,6 +279,30 @@ class TeacherOutput:
 teacher_model_server_model_name = None
 
 
+class EMAUpdateCallback(TrainerCallback):
+    """Update EMA teacher weights after each optimizer step.
+
+    Mirrors the OPSD reference implementation. Only triggers an update when
+    the optimizer actually stepped (end of a gradient accumulation cycle)
+    so that EMA progresses in lockstep with the student.
+    """
+
+    def __init__(self, trainer):
+        self.trainer = trainer
+
+    def on_step_end(self, args, state, control, **kwargs):
+        trainer = self.trainer
+        if trainer is None:
+            return
+        if not getattr(trainer, '_ema_enabled', False):
+            return
+        # Only update at the end of a gradient-accumulation cycle (mirrors OPSD/trl pattern).
+        accelerator = getattr(trainer, 'accelerator', None)
+        if accelerator is not None and not getattr(accelerator, 'sync_gradients', True):
+            return
+        trainer._update_ema()
+
+
 class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
 
     def __init__(self, model: Optional[Union[PreTrainedModel, nn.Module, str]] = None, *_args, **kwargs):
@@ -91,6 +319,8 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
         self.lmbda = args.lmbda
         self.temperature = args.temperature
         self.seq_kd = args.seq_kd
+        # Per-token JSD clip cap; 0.0 disables (fully backward-compatible default).
+        self.jsd_token_clip = getattr(args, 'jsd_token_clip', 0.0)
         self.generation_config = model.generation_config
         self._metrics = {'train': defaultdict(list), 'eval': defaultdict(list)}
         self._total_train_tokens = 0
@@ -108,6 +338,34 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
         self.is_teacher_ds3 = None
         self._teacher_use_disable_adapter = teacher_use_disable_adapter
         self._is_self_distillation = (teacher_model is None and teacher_model_server is None)
+
+        # EMA teacher configuration (self-distillation mode only).
+        self._ema_enabled = bool(getattr(args, 'use_ema_teacher', False))
+        self.ema_decay = float(getattr(args, 'ema_decay', 0.999))
+        self._ema_params = None  # lazy init on first optimizer step (see _update_ema)
+        if self._ema_enabled:
+            # Mutual exclusivity: EMA teacher and disable_adapter teacher are two different
+            # self-distillation strategies and cannot be active simultaneously.
+            if self._teacher_use_disable_adapter:
+                raise ValueError(
+                    'use_ema_teacher=True 与 teacher_use_disable_adapter=True 互斥：'
+                    'EMA teacher 通过交换权重实现自蒸馏，disable_adapter 通过关闭 LoRA 实现自蒸馏，'
+                    '两者不可同时启用。')
+            if not self._is_self_distillation:
+                logger.warning(
+                    'use_ema_teacher=True 但存在独立 teacher_model/teacher_model_server，'
+                    'EMA 机制只在自蒸馏路径生效，此处将被忽略。')
+                self._ema_enabled = False
+            else:
+                self.add_callback(EMAUpdateCallback(self))
+                try:
+                    unwrapped = self.accelerator.unwrap_model(model)
+                    n_trainable = sum(1 for p in unwrapped.parameters() if p.requires_grad)
+                except Exception:  # noqa: BLE001 - keep init resilient
+                    n_trainable = -1
+                logger.info(
+                    f'EMA teacher initialized: {n_trainable} tensors '
+                    f'(decay={self.ema_decay}, lazy-populated on first optimizer step)')
 
         # Initialize teacher model
         if teacher_model is not None:
@@ -137,6 +395,144 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
         # Initialize resample data iterator for truncation_strategy 'raise'('delete')
         if self.template.truncation_strategy == 'raise':
             self._prepare_resample_data_iterator()
+
+    def _update_ema(self):
+        """Update EMA parameters after an optimizer step.
+
+        On the very first call this lazily initialises the EMA state as an exact copy of the
+        current (trainable) model parameters, then returns without applying a decay step.
+        Subsequent calls apply ``ema = decay * ema + (1 - decay) * student``.
+
+        ZeRO-3 note: with ZeRO-3 each rank only holds a shard of every parameter.  We use
+        ``deepspeed.zero.GatheredParameters`` (read-only, ``modifier_rank=None``) so every
+        rank sees the full parameter tensor when snapshotting / updating the EMA.  The EMA
+        tensors are therefore full-sized copies, which is also required by
+        ``_ema_teacher_context`` when it swaps the gathered student weights with EMA values.
+        """
+        decay = self.ema_decay
+        unwrapped = self.accelerator.unwrap_model(self.model)
+
+        # Detect ZeRO-3 (same pattern used elsewhere in this file)
+        deepspeed_plugin = getattr(self.accelerator.state, 'deepspeed_plugin', None)
+        zero_stage_3 = deepspeed_plugin is not None and getattr(deepspeed_plugin, 'zero_stage', 0) == 3
+
+        if zero_stage_3:
+            import deepspeed  # lazy import; only required under ZeRO-3
+
+            trainable = [(name, param) for name, param in unwrapped.named_parameters() if param.requires_grad]
+            params_list = [p for _, p in trainable]
+
+            # modifier_rank=None -> read-only gather; original partitions are restored on exit.
+            with deepspeed.zero.GatheredParameters(params_list, modifier_rank=None):
+                if self._ema_params is None:
+                    self._ema_params = {name: param.data.clone().detach() for name, param in trainable}
+                    n_tensors = len(self._ema_params)
+                    n_params = sum(p.numel() for p in self._ema_params.values())
+                    logger.info(
+                        f'EMA teacher initialized: {n_tensors} tensors, {n_params:,} parameters '
+                        f'(decay={decay})')
+                    return  # first call = initialization only, no decay update
+
+                for name, param in trainable:
+                    if name not in self._ema_params:
+                        continue
+                    ema = self._ema_params[name]
+                    if ema.device != param.data.device:
+                        ema = ema.to(param.data.device)
+                        self._ema_params[name] = ema
+                    ema.mul_(decay).add_(param.data, alpha=1.0 - decay)
+        else:
+            if self._ema_params is None:
+                # Lazy init: snapshot the current weights as the initial EMA state.
+                self._ema_params = {
+                    name: param.data.clone().detach()
+                    for name, param in unwrapped.named_parameters() if param.requires_grad
+                }
+                n_tensors = len(self._ema_params)
+                n_params = sum(p.numel() for p in self._ema_params.values())
+                logger.info(
+                    f'EMA teacher initialized: {n_tensors} tensors, {n_params:,} parameters '
+                    f'(decay={decay})')
+                return  # first call = initialization only, no decay update
+
+            for name, param in unwrapped.named_parameters():
+                if not param.requires_grad or name not in self._ema_params:
+                    continue
+                ema = self._ema_params[name]
+                # Move EMA buffer to the same device as the live param (handles multi-GPU setups)
+                if ema.device != param.data.device:
+                    ema = ema.to(param.data.device)
+                    self._ema_params[name] = ema
+                ema.mul_(decay).add_(param.data, alpha=1.0 - decay)
+
+    @contextmanager
+    def _ema_teacher_context(self, model=None):
+        """Context manager that temporarily loads EMA weights for the teacher forward pass.
+
+        Swaps ``param.data`` of every tracked (trainable) parameter with its EMA counterpart,
+        runs the body (teacher forward), then restores the student weights unconditionally.
+        Safe to use inside ``torch.no_grad()``.  If EMA has not been initialised yet (step 0),
+        this is a no-op and the current student weights are used instead.
+
+        ZeRO-3 note: direct ``param.data`` assignment bypasses ZeRO-3's shard lifecycle and
+        corrupts its internal state, causing size-mismatch errors during gradient-checkpoint
+        recomputation.  When ZeRO-3 is active we therefore wrap the swap inside
+        ``deepspeed.zero.GatheredParameters`` so the parameters are fully materialised on
+        every rank before we touch them, and ZeRO-3 re-partitions cleanly on exit.
+        """
+        if self._ema_params is None:
+            yield  # EMA not yet initialised; fall back to current weights
+            return
+
+        target_model = model if model is not None else self.model
+        unwrapped = self.accelerator.unwrap_model(target_model)
+
+        deepspeed_plugin = getattr(self.accelerator.state, 'deepspeed_plugin', None)
+        zero_stage_3 = deepspeed_plugin is not None and getattr(deepspeed_plugin, 'zero_stage', 0) == 3
+
+        if zero_stage_3:
+            import deepspeed  # lazy import; only required under ZeRO-3
+
+            name_to_param = {
+                name: param
+                for name, param in unwrapped.named_parameters() if param.requires_grad and name in self._ema_params
+            }
+            params_list = list(name_to_param.values())
+
+            # modifier_rank=0 causes ZeRO-3 to re-partition from rank-0's param.data on exit,
+            # which will be the restored student weights.
+            with deepspeed.zero.GatheredParameters(params_list, modifier_rank=0):
+                saved = {}
+                for name, param in name_to_param.items():
+                    ema = self._ema_params[name]
+                    if ema.device != param.data.device:
+                        ema = ema.to(param.data.device)
+                        self._ema_params[name] = ema
+                    saved[name] = param.data.clone()
+                    param.data.copy_(ema)
+                try:
+                    yield
+                finally:
+                    for name, param in name_to_param.items():
+                        if name in saved:
+                            param.data.copy_(saved[name])
+        else:
+            saved = {}
+            for name, param in unwrapped.named_parameters():
+                if not param.requires_grad or name not in self._ema_params:
+                    continue
+                ema = self._ema_params[name]
+                if ema.device != param.data.device:
+                    ema = ema.to(param.data.device)
+                    self._ema_params[name] = ema
+                saved[name] = param.data
+                param.data = ema
+            try:
+                yield
+            finally:
+                for name, param in unwrapped.named_parameters():
+                    if name in saved:
+                        param.data = saved[name]
 
     def _get_data_collator(self, args, template):
         return identity_data_collator
@@ -195,7 +591,7 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
                 t_logits = teacher_output.full_logits[teacher_mask][None]
                 topk_logprobs = None
                 topk_indices = None
-            return self.generalized_jsd_loss(
+            return generalized_jsd_loss(
                 student_logits=s_logits,
                 teacher_logits=t_logits,
                 beta=self.beta,
@@ -203,37 +599,41 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
                 topk=self.gkd_logits_topk if t_logits is not None else None,
                 teacher_topk_logprobs=topk_logprobs,
                 teacher_topk_indices=topk_indices,
+                token_clip=self.jsd_token_clip,
             )
 
         # Top-k mode: teacher logprobs from API
         if teacher_output.is_topk_mode:
-            return self.generalized_jsd_loss(
+            return generalized_jsd_loss(
                 student_logits=student_logits,
                 labels=shifted_labels,
                 beta=self.beta,
                 temperature=self.temperature,
                 teacher_topk_logprobs=teacher_output.topk_logprobs,
                 teacher_topk_indices=teacher_output.topk_indices,
+                token_clip=self.jsd_token_clip,
             )
 
         # Full-vocab teacher with top-k reduction (local teacher model)
         if self.gkd_logits_topk is not None:
-            return self.generalized_jsd_loss(
+            return generalized_jsd_loss(
                 student_logits=student_logits,
                 teacher_logits=teacher_output.full_logits,
                 labels=shifted_labels,
                 beta=self.beta,
                 temperature=self.temperature,
                 topk=self.gkd_logits_topk,
+                token_clip=self.jsd_token_clip,
             )
 
         # Full-vocab mode without top-k: vocab alignment handled inside generalized_jsd_loss
-        return self.generalized_jsd_loss(
+        return generalized_jsd_loss(
             student_logits=student_logits,
             teacher_logits=teacher_output.full_logits,
             labels=shifted_labels,
             beta=self.beta,
             temperature=self.temperature,
+            token_clip=self.jsd_token_clip,
         )
 
     # Code borrowed from huggingface/trl
@@ -400,9 +800,16 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
                 for k, v in model_inputs.items() if k != 'labels'
             }
 
-            adapter_ctx = (
-                self.accelerator.unwrap_model(model).disable_adapter()
-                if self._teacher_use_disable_adapter else nullcontext())
+            # Teacher context selection for self-distillation (mutually exclusive):
+            #   use_ema_teacher=True          -> swap in EMA weights via _ema_teacher_context
+            #   _teacher_use_disable_adapter  -> disable LoRA adapters (base model = teacher)
+            #   otherwise                     -> no-op (dynamic self-distillation)
+            if self._ema_enabled:
+                adapter_ctx = self._ema_teacher_context(model)
+            elif self._teacher_use_disable_adapter:
+                adapter_ctx = self.accelerator.unwrap_model(model).disable_adapter()
+            else:
+                adapter_ctx = nullcontext()
             with torch.no_grad(), adapter_ctx, \
                     disable_gradient_checkpointing(model, self.args.gradient_checkpointing_kwargs):
                 outputs_teacher = model(**t_fwd)
@@ -410,6 +817,17 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
             opsd_labels = opsd_teacher_inputs.get('labels') if opsd_teacher_inputs is not None else None
             teacher_out = TeacherOutput(full_logits=outputs_teacher.logits, opsd_teacher_labels=opsd_labels)
             loss = self._compute_jsd_loss(outputs_student.logits, teacher_out, inputs['labels'])
+
+            # --- ICSD monitoring metrics (entropy / thinking_length / DeepConf) ---
+            # Accumulate into self._metrics['train']; flushed via log() override. Rank-symmetric:
+            # all ranks compute so no NCCL drift; averaging done when log() is called.
+            try:
+                metric_labels = inputs['labels']
+                icsd_metrics = compute_icsd_monitoring_metrics(outputs_student.logits, metric_labels)
+                for k, v in icsd_metrics.items():
+                    self._metrics['train'][k].append(float(v))
+            except Exception as _e:
+                logger.warning(f'[icsd_metrics] skipped: {_e}')
 
             # --- OPSD Teacher Output Logging ---
             if self.log_opsd_io and self.accelerator.is_main_process:
@@ -758,103 +1176,11 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
             )
             self.use_liger_gkd_loss = True
 
-    @staticmethod
-    def _align_vocab_size(student_logits, teacher_logits):
-        """Align vocab dimensions between student and teacher by padding the smaller one."""
-        stu_vocab = student_logits.shape[-1]
-        tea_vocab = teacher_logits.shape[-1]
-        if stu_vocab == tea_vocab:
-            return student_logits, teacher_logits
-        if stu_vocab < tea_vocab:
-            student_logits = F.pad(student_logits, (0, tea_vocab - stu_vocab), 'constant', 0)
-            student_logits[..., stu_vocab:] = teacher_logits[..., stu_vocab:]
-        else:
-            teacher_logits = F.pad(teacher_logits, (0, stu_vocab - tea_vocab), 'constant', 0)
-            teacher_logits[..., tea_vocab:] = student_logits[..., tea_vocab:]
-        return student_logits, teacher_logits
-
-    def generalized_jsd_loss(
-        self,
-        student_logits,
-        teacher_logits=None,
-        labels=None,
-        beta=0.5,
-        temperature=1.0,
-        chunk_size=512,
-        topk=None,
-        teacher_topk_logprobs=None,
-        teacher_topk_indices=None,
-    ):
-        # Align vocab sizes when student and teacher have different vocabulary dimensions
-        if teacher_logits is not None:
-            student_logits, teacher_logits = self._align_vocab_size(student_logits, teacher_logits)
-
-        # Top-k mode: gather/topk first to get small [*, k] tensors, then scale in-place
-        if teacher_topk_logprobs is not None and teacher_topk_indices is not None:
-            student_logits = torch.gather(student_logits, dim=-1, index=teacher_topk_indices)
-            student_logits.div_(temperature)
-            teacher_logits = teacher_topk_logprobs / temperature
-            temperature = 1.0
-        elif topk is not None and teacher_logits is not None:
-            teacher_logits, topk_idx = torch.topk(teacher_logits, k=topk, dim=-1)
-            teacher_logits.div_(temperature)
-            student_logits = torch.gather(student_logits, dim=-1, index=topk_idx)
-            student_logits.div_(temperature)
-            temperature = 1.0
-
-        if labels is not None:
-            mask = labels != -100
-            student_logits = student_logits[mask]
-            teacher_logits = teacher_logits[mask]
-            num_valid = mask.sum()
-        else:
-            student_logits = student_logits.view(-1, student_logits.size(-1))
-            teacher_logits = teacher_logits.view(-1, teacher_logits.size(-1))
-            num_valid = student_logits.size(0)
-        student_logits.div_(temperature)
-        teacher_logits.div_(temperature)
-
-        if num_valid == 0:
-            return student_logits.new_zeros(())
-
-        num_valid_int = num_valid if isinstance(num_valid, int) else num_valid.item()
-        total_loss = student_logits.new_zeros(())
-
-        if beta != 0 and beta != 1:
-            beta_t = torch.tensor(beta, dtype=student_logits.dtype, device=student_logits.device)
-            log_beta = torch.log(beta_t)
-            log_1_minus_beta = torch.log1p(-beta_t)
-        else:
-            beta_t = log_beta = log_1_minus_beta = None
-
-        for start_idx in range(0, num_valid_int, chunk_size):
-            end_idx = min(start_idx + chunk_size, num_valid_int)
-            s_chunk = student_logits[start_idx:end_idx]
-            t_chunk = teacher_logits[start_idx:end_idx]
-
-            s_log_probs = F.log_softmax(s_chunk, dim=-1)
-            t_log_probs = F.log_softmax(t_chunk, dim=-1)
-            del s_chunk, t_chunk
-
-            if beta == 0:
-                jsd_chunk = F.kl_div(s_log_probs, t_log_probs, reduction='none', log_target=True)
-            elif beta == 1:
-                jsd_chunk = F.kl_div(t_log_probs, s_log_probs, reduction='none', log_target=True)
-            else:
-                mixture_log_probs = torch.logsumexp(
-                    torch.stack([s_log_probs + log_1_minus_beta, t_log_probs + log_beta]),
-                    dim=0,
-                )
-                kl_teacher = F.kl_div(mixture_log_probs, t_log_probs, reduction='none', log_target=True)
-                kl_student = F.kl_div(mixture_log_probs, s_log_probs, reduction='none', log_target=True)
-                del mixture_log_probs
-                jsd_chunk = beta_t * kl_teacher + (1 - beta_t) * kl_student
-                del kl_teacher, kl_student
-
-            total_loss = total_loss + jsd_chunk.sum()
-            del jsd_chunk, s_log_probs, t_log_probs
-
-        return total_loss / num_valid
+    # _align_vocab_size and generalized_jsd_loss are module-level functions (see top of file).
+    # Exposed as staticmethods on the class for backward compatibility — external subclasses
+    # and overrides that reference ``self.generalized_jsd_loss`` continue to work.
+    _align_vocab_size = staticmethod(_align_vocab_size)
+    generalized_jsd_loss = staticmethod(generalized_jsd_loss)
 
     def _prepare_logging(self):
         """Initialize logging components for on-policy rollout tracking."""
@@ -886,6 +1212,13 @@ class GKDTrainer(RolloutTrainerMixin, SwiftMixin, HFGKDTrainer):
 
     def log(self, logs: Dict[str, float], start_time: Optional[float] = None) -> None:
         """Override log method to include completion table logging (aligned with GRPO)."""
+        # Flush ICSD monitoring metrics accumulated during compute_loss
+        mode = 'train' if self.model.training else 'eval'
+        icsd_avg = {k: sum(v) / len(v) for k, v in self._metrics[mode].items() if v}
+        if icsd_avg:
+            logs.update(icsd_avg)
+            self._metrics[mode].clear()
+
         # Call parent log method
         import transformers
         from packaging import version

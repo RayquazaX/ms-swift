@@ -261,6 +261,10 @@ class RLHFArguments(TeacherModelArguments, GRPOArguments, PPOArguments, RewardMo
     gkd_logits_topk: Optional[int] = None
     offload_teacher_model: bool = False
     log_opsd_io: bool = False  # Log structured student/teacher I/O per step to opsd_io_log.jsonl
+    jsd_token_clip: float = 0.0  # per-token JSD clip cap; 0 disables (default)
+    # EMA teacher (self-distillation via exponential moving average of student weights)
+    use_ema_teacher: bool = False  # if True, use EMA of student as teacher (self-distillation)
+    ema_decay: float = 0.999  # EMA decay (only used when use_ema_teacher=True)
     # compat
     max_new_tokens: Optional[int] = None  # use max_completion_length instead
 

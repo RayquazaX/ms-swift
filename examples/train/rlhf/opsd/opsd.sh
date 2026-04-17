@@ -47,8 +47,11 @@ swift rlhf \
     --external_plugins examples/train/rlhf/opsd/opsd_plugin.py \
     --dataset 'open-r1/OpenThoughts-114k-math' \
     --lmbda 1.0 \
-    --beta 0.5 \
-    --temperature 1.2 \
+    --beta 0 \
+    --temperature 1.1 \
+    --top_p 0.95 \
+    --top_k 20 \
+    --jsd_token_clip 0.05 \
     --sft_alpha 0 \
     --torch_dtype bfloat16 \
     --max_steps 1000 \

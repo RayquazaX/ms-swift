@@ -1,0 +1,34 @@
+{
+    "name": "Qwen3-4B@aime25",
+    "dataset_name": "aime25",
+    "dataset_pretty_name": "AIME-2025",
+    "dataset_description": "\n## Overview\n\nAIME 2025 (American Invitational Mathematics Examination 2025) is a benchmark based on problems from the prestigious AIME competition, one of the most challenging high school mathematics contests in the United States. It tests advanced mathematical reasoning and problem-solving skills.\n\n## Task Description\n\n- **Task Type**: Competition Mathematics Problem Solving\n- **Input**: AIME-level mathematical problem\n- **Output**: Integer answer (0-999) with step-by-step reasoning\n- **Difficulty**: Advanced high school / early undergraduate level\n\n## Key Features\n\n- Problems from AIME I and AIME II 2025 competitions\n- Answers are always integers between 0 and 999\n- Requires creative mathematical reasoning and problem-solving\n- Topics: algebra, geometry, number theory, combinatorics, probability\n- Represents top-tier high school mathematics competition difficulty\n\n## Evaluation Notes\n\n- Default configuration uses **0-shot** evaluation\n- Answers should be formatted within `\\boxed{}` for proper extraction\n- Uses LLM-as-judge for mathematical equivalence checking\n",
+    "model_name": "Qwen3-4B",
+    "score": 0.2,
+    "metrics": [
+        {
+            "name": "mean_acc",
+            "num": 30,
+            "score": 0.2,
+            "macro_score": 0.2,
+            "categories": [
+                {
+                    "name": [
+                        "default"
+                    ],
+                    "num": 30,
+                    "score": 0.2,
+                    "macro_score": 0.2,
+                    "subsets": [
+                        {
+                            "name": "default",
+                            "score": 0.2,
+                            "num": 30
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "analysis": "N/A"
+}
